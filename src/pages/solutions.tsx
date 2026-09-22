@@ -1,6 +1,6 @@
 // src/pages/solutions.tsx
 import { useState } from "react";
-import { CheckCircle2, Mail, ArrowLeft, Server, Shield, Users, Building, Clock, Database, Network, FileText, ShoppingCart, Package, Monitor, Wrench } from "lucide-react";
+import { CheckCircle2, Mail, ArrowLeft, Server, Shield, Users, Building, Network, FileText, ShoppingCart } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { SALES_EMAIL } from "../lib/catalog";
 
@@ -211,7 +211,7 @@ export default function SolutionsPage() {
           <div className="mt-4 rounded-2xl border border-[#839705] bg-[#839705]/5 p-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted-foreground">Selected solutions:</span>
-              {selectedServices.map((s, index) => (
+              {selectedServices.map((s) => (
                 <span key={s?.id} className="rounded-full bg-[#839705]/20 px-3 py-1 text-sm font-semibold text-[#839705]">
                   {s?.name}
                 </span>

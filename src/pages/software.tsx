@@ -1,6 +1,6 @@
 // src/pages/software.tsx
 import { useState } from "react";
-import { CheckCircle2, Mail, ArrowLeft, Code, Users, Database, Settings, Clock } from "lucide-react";
+import { CheckCircle2, Mail, ArrowLeft, Code, Users, Settings } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { SALES_EMAIL } from "../lib/catalog";
 

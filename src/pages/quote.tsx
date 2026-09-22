@@ -1,31 +1,13 @@
 // src/pages/quote.tsx
-// Professional quote request — collects contact + delivery details so the
-// operations team does not start work with incomplete client information.
 import { useState } from "react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  Mail,
-  Minus,
-  Plus,
-  Trash2,
-  FileText,
-  ShoppingCart,
-  Info,
-  RotateCcw,
-  Copy,
-  CheckCircle2,
-  MapPin,
-  Calendar,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Mail, Minus, Plus, Trash2, FileText, ShoppingCart, Info, RotateCcw } from "lucide-react";
 import { useStore, productById } from "../lib/store-context";
-import { SALES_EMAIL } from "../lib/catalog";
+import { submitQuote } from "../lib/api";
 
 interface QuotePageProps {
   onClose?: () => void;
   onNavigateToStore?: () => void;
-  onNavigate?: (page: string) => void;
+  onNavigate?: (page: string) => void; // Expecting this
   initialStep?: 1 | 2 | 3;
 }
 
@@ -35,62 +17,30 @@ type Details = {
   email: string;
   company?: string;
   message?: string;
-  /** Delivery / site address — required for a complete quotation */
-  address?: string;
-  /** Preferred delivery or site-visit date (free text / ISO date) */
-  deliveryDate?: string;
-  /** Gate / parking / access notes */
-  siteNotes?: string;
 };
 
-const EMPTY: Details = {
-  fullName: "",
-  cellphone: "",
-  email: "",
-  company: "",
-  message: "",
-  address: "",
-  deliveryDate: "",
-  siteNotes: "",
-};
+const EMPTY: Details = { fullName: "", cellphone: "", email: "", company: "", message: "" };
 
-// Target email for quotes (fallback mailto)
-const QUOTE_EMAIL = SALES_EMAIL || "sales@untangledits.co.za";
-
-export default function QuotePage({
-  onClose,
-  onNavigateToStore,
-  onNavigate,
-  initialStep = 1,
-}: QuotePageProps) {
+export default function QuotePage({ onClose, onNavigateToStore, onNavigate, initialStep = 1 }: QuotePageProps) {
   const { quote, setQuoteQty, removeFromQuote, clearQuote } = useStore();
   const [step, setStep] = useState<1 | 2 | 3>(initialStep);
   const [details, setDetails] = useState<Details>(EMPTY);
-  const [errors, setErrors] = useState<Partial<Record<keyof Details, string>>>(
-    {}
-  );
+  const [errors, setErrors] = useState<Partial<Record<keyof Details, string>>>({});
   const [isSending, setIsSending] = useState(false);
   const [specNotes, setSpecNotes] = useState<Record<string, string>>({});
+  
+  // State to hold the submitted reference
   const [reference, setReference] = useState<string | null>(null);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [copySuccess, setCopySuccess] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-
-  // Keep submitted items after cart is cleared so success screen still works
-  const [submittedItems, setSubmittedItems] = useState<
-    { id: string; qty: number; kind: string; name: string }[]
-  >([]);
 
   const buildSummary = () => {
-    const itemsToUse = quote.length > 0 ? quote : submittedItems;
-    const lines = itemsToUse.map((item) => {
-      const product = productById(item.id);
-      const spec = specNotes[item.id] || "";
-      const specs = product?.specs ? ` [${product.specs.join(", ")}]` : "";
-      return `• ${item.name}${specs} — qty ${item.qty}${
-        spec ? ` (${spec})` : ""
-      }`;
-    });
+    const lines = quote.map(
+      (item) => {
+        const product = productById(item.id);
+        const spec = specNotes[item.id] || "";
+        const specs = product?.specs ? ` [${product.specs.join(", ")}]` : "";
+        return `• ${item.name}${specs} — qty ${item.qty}${spec ? ` (${spec})` : ""}`;
+      }
+    );
     return [
       "Hi Untangled IT Solutions, I'd like a quote.",
       "",
@@ -100,252 +50,72 @@ export default function QuotePage({
       `Cell: ${details.cellphone}`,
       `Email: ${details.email}`,
       ...(details.company ? [`Company: ${details.company}`] : []),
-      ...(details.address ? [`Delivery address: ${details.address}`] : []),
-      ...(details.deliveryDate
-        ? [`Preferred delivery / site date: ${details.deliveryDate}`]
-        : []),
-      ...(details.siteNotes ? [`Site notes: ${details.siteNotes}`] : []),
       ...(details.message ? ["", `Additional Notes: ${details.message}`] : []),
     ].join("\n");
   };
 
-  const buildFullQuoteText = () => {
-    const itemsToUse = quote.length > 0 ? quote : submittedItems;
-    const lines = itemsToUse.map((item) => {
-      const product = productById(item.id);
-      const spec = specNotes[item.id] || "";
-      const specs = product?.specs ? ` [${product.specs.join(", ")}]` : "";
-      return `• ${item.name}${specs} — qty ${item.qty}${
-        spec ? ` (${spec})` : ""
-      }`;
-    });
-
-    return [
-      "=".repeat(50),
-      "UNTANGLED IT SOLUTIONS - QUOTE REQUEST",
-      "=".repeat(50),
-      "",
-      `REFERENCE: ${reference}`,
-      "",
-      "-".repeat(40),
-      "ITEMS REQUESTED",
-      "-".repeat(40),
-      ...(lines.length ? lines : ["(No items)"]),
-      "",
-      "-".repeat(40),
-      "CONTACT DETAILS",
-      "-".repeat(40),
-      `Name: ${details.fullName}`,
-      `Cell: ${details.cellphone}`,
-      `Email: ${details.email}`,
-      ...(details.company ? [`Company: ${details.company}`] : []),
-      ...(details.address ? [`Delivery address: ${details.address}`] : []),
-      ...(details.deliveryDate
-        ? [`Preferred delivery / site date: ${details.deliveryDate}`]
-        : []),
-      ...(details.siteNotes ? [`Site notes: ${details.siteNotes}`] : []),
-      ...(details.message ? ["", "Additional Notes:", details.message] : []),
-      "",
-      "=".repeat(50),
-      "Sent from Untangled IT Solutions",
-      `Track this quote at: https://untangled.co.za/track/${reference}`,
-      "=".repeat(50),
-    ].join("\n");
-  };
-
-  const handleCopyReference = async () => {
-    if (!reference) return;
-    try {
-      await navigator.clipboard.writeText(reference);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 3000);
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = reference;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 3000);
-    }
-  };
-
-  const handleCopyFullQuote = async () => {
-    const text = buildFullQuoteText();
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 3000);
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 3000);
-    }
-  };
-
   const validateForm = () => {
     const newErrors: Partial<Record<keyof Details, string>> = {};
-
+    
     if (!details.fullName.trim() || details.fullName.trim().length < 2) {
       newErrors.fullName = "Please enter your full name";
     } else if (details.fullName.trim().length > 80) {
       newErrors.fullName = "Name is too long";
     }
-
+    
     if (!details.cellphone.trim() || details.cellphone.trim().length < 9) {
       newErrors.cellphone = "Enter a valid cellphone number";
     } else if (!/^[0-9+()\s-]+$/.test(details.cellphone.trim())) {
       newErrors.cellphone = "Only numbers, spaces and + are allowed";
     }
-
+    
     if (!details.email.trim()) {
       newErrors.email = "Enter a valid email address";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email.trim())) {
       newErrors.email = "Enter a valid email address";
     }
-
+    
     if (details.company && details.company.trim().length > 80) {
       newErrors.company = "Company name is too long";
     }
-
+    
     if (details.message && details.message.trim().length > 600) {
       newErrors.message = "Message is too long";
     }
-
-    // Address strongly recommended — soft require for delivery-capable items
-    if (details.address && details.address.trim().length > 200) {
-      newErrors.address = "Address is too long";
-    }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const submit = async () => {
-    console.log("🚀 Submit function started");
-
     if (!validateForm()) {
-      console.log("❌ Form validation failed");
       return;
     }
-
+    
     setIsSending(true);
-    setApiError(null);
-
+    
     try {
-      const API_BASE_URL = (
-        (import.meta.env.VITE_API_URL ?? "/api").toString().trim() || "/api"
-      ).replace(/\/$/, "");
-
-      // Enrich items with optional catalogue price so operations can seed quotation
-      const items = quote.map((item) => {
-        const product = productById(item.id);
-        const note = specNotes[item.id] || "";
-        return {
+      const response = await submitQuote({
+        customerName: details.fullName.trim(),
+        company: details.company?.trim() || undefined,
+        email: details.email.trim(),
+        phone: details.cellphone.trim(),
+        notes: buildSummary(),
+        items: quote.map((item) => ({
           id: item.id,
           name: item.name,
-          kind: item.kind || "product",
+          kind: item.kind,
           qty: item.qty,
-          image: product?.image || null,
-          // Seed unit price when catalogue has a fixed price (null = quote-only)
-          price: product?.price ?? null,
-          specs: product?.specs || [],
-          note: note || undefined,
-        };
+        })),
       });
 
-      const payload = {
-        customerName: details.fullName.trim(),
-        company: details.company?.trim() || "",
-        email: details.email.trim().toLowerCase(),
-        phone: details.cellphone.trim(),
-        notes: details.message?.trim() || "",
-        // Delivery / site fields — stops “Not provided” on the desktop
-        address: details.address?.trim() || "",
-        delivery_address: details.address?.trim() || "",
-        delivery_date: details.deliveryDate?.trim() || "",
-        preferred_delivery_date: details.deliveryDate?.trim() || "",
-        site_notes: details.siteNotes?.trim() || "",
-        items,
-        // Initial status for professional workflow
-        status: "received",
-      };
-
-      console.log("📤 Sending quote to API:", payload);
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/quotes`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeoutId);
-
-        console.log("📥 Response status:", response.status);
-
-        const data = await response.json();
-        console.log("📥 API Response:", data);
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || `Server error: ${response.status}`);
-        }
-
-        console.log("✅ Quote saved with reference:", data.reference);
-
-        setSubmittedItems([...quote]);
-        setReference(data.reference);
-
-        // Open mailto so the client also has a copy of the request
-        const summary = buildSummary();
-        const subject = `Quote Request ${data.reference} — ${details.fullName}`;
-        const mailtoUrl = `mailto:${QUOTE_EMAIL}?cc=${encodeURIComponent(
-          details.email
-        )}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-          summary
-        )}`;
-
-        window.location.href = mailtoUrl;
-
-        setEmailSent(true);
-        clearQuote();
-        setSpecNotes({});
-        setIsSending(false);
-      } catch (fetchError: any) {
-        clearTimeout(timeoutId);
-
-        if (fetchError.name === "AbortError") {
-          throw new Error(
-            "Request timed out. Please check your connection and try again."
-          );
-        }
-        throw fetchError;
-      }
+      setReference(response.reference);
+      clearQuote();
+      setSpecNotes({});
     } catch (error) {
-      console.error("❌ Error submitting quote:", error);
-
-      let errorMessage = "There was an error sending your quote request.";
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        errorMessage =
-          "Cannot connect to the API. Use VITE_API_URL=/api (Vite proxy) or fix CORS on Render.";
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      setApiError(errorMessage);
+      console.error('Error submitting quote:', error);
+      alert('There was an error sending your quote request. Please try again or contact us directly.');
+    } finally {
       setIsSending(false);
     }
   };
@@ -356,89 +126,56 @@ export default function QuotePage({
   };
 
   const handleBrowseStore = () => {
-    if (onNavigateToStore) onNavigateToStore();
-    if (onClose) onClose();
+    if (onNavigateToStore) {
+      onNavigateToStore();
+    }
+    if (onClose) {
+      onClose();
+    }
   };
 
   const handleSpecChange = (id: string, value: string) => {
-    setSpecNotes((prev) => ({ ...prev, [id]: value }));
+    setSpecNotes(prev => ({ ...prev, [id]: value }));
   };
 
   // ============================================================
-  // SUCCESS SCREEN
+  // SUCCESS SCREEN - FIXED NAVIGATION
   // ============================================================
   if (reference) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
         <Check className="mx-auto h-14 w-14 text-green-500" />
-        <h1 className="mt-4 text-3xl font-extrabold text-foreground">
-          Quotation request sent
-        </h1>
+        <h1 className="mt-4 text-3xl font-extrabold text-foreground">Quotation request sent</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Free and no-obligation. We&apos;ll come back to you with pricing within
-          24 hours.
+          Free and no-obligation. We'll come back to you with pricing within 24 hours.
         </p>
-        {emailSent && (
-          <p className="mt-1 text-xs text-green-600">
-            ✓ Your email client has been opened. Please send the email to
-            complete your quote request.
-          </p>
-        )}
         <div className="mx-auto mt-6 w-fit rounded-2xl border border-border bg-card px-6 py-4">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            Your quote reference
-          </p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Your quote reference</p>
           <p className="text-2xl font-extrabold text-foreground">{reference}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Keep this — use it with your email to track the quote.
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Keep this — use it with your email to track the quote.</p>
         </div>
-
-        <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={handleCopyReference}
-            className={`h-12 rounded-xl px-6 text-sm font-semibold transition-colors inline-flex items-center gap-2 ${
-              copySuccess
-                ? "bg-green-500 text-white"
-                : "border border-border bg-background text-foreground hover:bg-muted"
-            }`}
-          >
-            {copySuccess ? (
-              <>
-                <CheckCircle2 className="h-4 w-4" /> Copied!
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" /> Copy reference
-              </>
-            )}
-          </button>
-          <button
-            onClick={handleCopyFullQuote}
-            className="h-12 rounded-xl border border-border bg-background px-6 text-sm font-semibold text-foreground hover:bg-muted inline-flex items-center gap-2"
-          >
-            <FileText className="h-4 w-4" /> Copy full request
-          </button>
-        </div>
-
         <div className="mt-6 flex flex-wrap justify-center gap-2">
+          
+          {/* UPDATED: Simply calls onNavigate and closes the modal */}
           <button
             onClick={() => {
               if (onClose) onClose();
-              if (onNavigate) onNavigate("track-quote");
+              if (onNavigate) {
+                onNavigate('track-quote');
+              }
             }}
             className="h-12 rounded-xl bg-[#839705] px-6 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           >
             Track this quote
           </button>
-
+          
           <button
             onClick={() => {
               if (onClose) onClose();
               if (onNavigateToStore) {
                 onNavigateToStore();
               } else {
-                window.location.href = "/";
+                window.location.href = '/';
               }
             }}
             className="h-12 rounded-xl border border-border bg-background px-6 text-sm font-medium text-foreground hover:bg-muted transition-colors"
@@ -460,10 +197,10 @@ export default function QuotePage({
       </div>
       <h3 className="text-xl font-bold text-foreground">No items selected</h3>
       <p className="mt-2 text-muted-foreground max-w-md mx-auto">
-        You haven&apos;t added any items to your quote request yet. Browse our
-        products or refurbished devices to get started.
+        You haven't added any items to your quote request yet. 
+        Browse our products or refurbished devices to get started.
       </p>
-
+      
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <button
           onClick={handleBrowseStore}
@@ -476,7 +213,7 @@ export default function QuotePage({
           onClick={() => {
             if (onNavigateToStore) onNavigateToStore();
             if (onClose) onClose();
-            window.location.href = "/refurbished";
+            window.location.href = '/refurbished';
           }}
           className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors inline-flex items-center gap-2"
         >
@@ -499,12 +236,10 @@ export default function QuotePage({
     <div className="mx-auto max-w-3xl px-4 py-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight sm:text-4xl text-foreground">
-            Request your quote
-          </h1>
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl text-foreground">Request your quote</h1>
           {quote.length > 0 && (
             <p className="mt-1 text-sm text-muted-foreground">
-              {quote.length} {quote.length === 1 ? "item" : "items"} selected
+              {quote.length} {quote.length === 1 ? 'item' : 'items'} selected
             </p>
           )}
         </div>
@@ -517,32 +252,15 @@ export default function QuotePage({
           </button>
         )}
       </div>
-
-      {apiError && (
-        <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400">
-          <p className="font-semibold">Error:</p>
-          <p>{apiError}</p>
-          <button
-            onClick={() => setApiError(null)}
-            className="mt-2 text-xs underline hover:no-underline"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
-
+      
       {quote.length > 0 && (
         <>
-          <p className="mt-2 text-muted-foreground">
-            Step {step} of 2 · takes about 45 seconds.
-          </p>
+          <p className="mt-2 text-muted-foreground">Step {step} of 3 · takes about 30 seconds.</p>
           <div className="mt-4 flex gap-2" aria-hidden>
-            {[1, 2].map((s) => (
+            {[1, 2, 3].map((s) => (
               <span
                 key={s}
-                className={`h-1.5 flex-1 rounded-full ${
-                  s <= step ? "bg-primary" : "bg-muted"
-                }`}
+                className={`h-1.5 flex-1 rounded-full ${s <= step ? "bg-primary" : "bg-muted"}`}
               />
             ))}
           </div>
@@ -555,37 +273,25 @@ export default function QuotePage({
             renderEmptyCart()
           ) : (
             <>
-              <h2 className="text-lg font-bold text-foreground">
-                What do you need quoted?
-              </h2>
+              <h2 className="text-lg font-bold text-foreground">What do you need quoted?</h2>
               {quote.map((item) => {
                 const product = productById(item.id);
                 return (
-                  <article
-                    key={item.id}
-                    className="rounded-2xl border border-border bg-card p-4"
-                  >
+                  <article key={item.id} className="rounded-2xl border border-border bg-card p-4">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
-                        <h3 className="text-sm font-bold leading-snug text-foreground">
-                          {item.name}
-                        </h3>
+                        <h3 className="text-sm font-bold leading-snug text-foreground">{item.name}</h3>
                         {product?.specs && (
                           <div className="mt-1.5 flex flex-wrap gap-1">
                             {product.specs.slice(0, 4).map((spec) => (
-                              <span
-                                key={spec}
-                                className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground"
-                              >
+                              <span key={spec} className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">
                                 {spec}
                               </span>
                             ))}
                           </div>
                         )}
                         <p className="mt-1.5 text-xs text-muted-foreground">
-                          {product?.price
-                            ? `R ${product.price.toLocaleString()}`
-                            : "Price on request"}
+                          {product?.price ? `R ${product.price.toLocaleString()}` : "Price on request"}
                           {product?.warranty && ` · ${product.warranty}`}
                         </p>
                       </div>
@@ -594,10 +300,10 @@ export default function QuotePage({
                         aria-label={`Remove ${item.name}`}
                         onClick={() => {
                           removeFromQuote(item.id);
-                          setSpecNotes((prev) => {
-                            const next = { ...prev };
-                            delete next[item.id];
-                            return next;
+                          setSpecNotes(prev => {
+                            const newNotes = { ...prev };
+                            delete newNotes[item.id];
+                            return newNotes;
                           });
                         }}
                         className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-destructive transition-colors"
@@ -605,7 +311,7 @@ export default function QuotePage({
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-
+                    
                     <div className="mt-3 flex flex-wrap items-center gap-3">
                       <div className="flex items-center rounded-lg border border-border">
                         <button
@@ -616,9 +322,7 @@ export default function QuotePage({
                         >
                           <Minus className="h-4 w-4" />
                         </button>
-                        <span className="w-10 text-center text-sm font-semibold text-foreground">
-                          {item.qty}
-                        </span>
+                        <span className="w-10 text-center text-sm font-semibold text-foreground">{item.qty}</span>
                         <button
                           type="button"
                           aria-label="Increase quantity"
@@ -628,13 +332,11 @@ export default function QuotePage({
                           <Plus className="h-4 w-4" />
                         </button>
                       </div>
-
+                      
                       <input
                         type="text"
                         value={specNotes[item.id] || ""}
-                        onChange={(e) =>
-                          handleSpecChange(item.id, e.target.value)
-                        }
+                        onChange={(e) => handleSpecChange(item.id, e.target.value)}
                         placeholder="Add specifications, condition or timeline (optional)"
                         className="h-10 flex-1 min-w-[200px] rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                       />
@@ -675,13 +377,7 @@ export default function QuotePage({
 
       {step === 2 && (
         <section className="mt-8">
-          <h2 className="text-lg font-bold text-foreground">
-            Contact &amp; delivery details
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Complete details help us prepare an accurate quotation the first
-            time — including delivery or site access where needed.
-          </p>
+          <h2 className="text-lg font-bold text-foreground">Where should we send the quote?</h2>
           <form
             className="mt-4 space-y-4"
             onSubmit={(e) => {
@@ -690,10 +386,7 @@ export default function QuotePage({
             }}
           >
             <div>
-              <label
-                htmlFor="fullName"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="fullName" className="text-sm font-medium text-foreground">
                 Full name *
               </label>
               <input
@@ -703,20 +396,15 @@ export default function QuotePage({
                 onChange={(e) => field("fullName", e.target.value)}
                 placeholder="Thandi Mokoena"
                 className={`mt-1.5 h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  errors.fullName ? "border-destructive" : "border-border"
+                  errors.fullName ? 'border-destructive' : 'border-border'
                 }`}
                 autoComplete="name"
               />
-              {errors.fullName && (
-                <p className="mt-1 text-xs text-destructive">{errors.fullName}</p>
-              )}
+              {errors.fullName && <p className="mt-1 text-xs text-destructive">{errors.fullName}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="cellphone"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="cellphone" className="text-sm font-medium text-foreground">
                 Cellphone (WhatsApp) *
               </label>
               <input
@@ -726,22 +414,15 @@ export default function QuotePage({
                 onChange={(e) => field("cellphone", e.target.value)}
                 placeholder="082 123 4567"
                 className={`mt-1.5 h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  errors.cellphone ? "border-destructive" : "border-border"
+                  errors.cellphone ? 'border-destructive' : 'border-border'
                 }`}
                 autoComplete="tel"
               />
-              {errors.cellphone && (
-                <p className="mt-1 text-xs text-destructive">
-                  {errors.cellphone}
-                </p>
-              )}
+              {errors.cellphone && <p className="mt-1 text-xs text-destructive">{errors.cellphone}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="email" className="text-sm font-medium text-foreground">
                 Email *
               </label>
               <input
@@ -751,20 +432,15 @@ export default function QuotePage({
                 onChange={(e) => field("email", e.target.value)}
                 placeholder="you@company.co.za"
                 className={`mt-1.5 h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  errors.email ? "border-destructive" : "border-border"
+                  errors.email ? 'border-destructive' : 'border-border'
                 }`}
                 autoComplete="email"
               />
-              {errors.email && (
-                <p className="mt-1 text-xs text-destructive">{errors.email}</p>
-              )}
+              {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="company"
-                className="text-sm font-medium text-foreground"
-              >
+              <label htmlFor="company" className="text-sm font-medium text-foreground">
                 Company (optional)
               </label>
               <input
@@ -773,111 +449,33 @@ export default function QuotePage({
                 value={details.company ?? ""}
                 onChange={(e) => field("company", e.target.value)}
                 className={`mt-1.5 h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  errors.company ? "border-destructive" : "border-border"
+                  errors.company ? 'border-destructive' : 'border-border'
                 }`}
                 autoComplete="organization"
               />
-              {errors.company && (
-                <p className="mt-1 text-xs text-destructive">{errors.company}</p>
-              )}
+              {errors.company && <p className="mt-1 text-xs text-destructive">{errors.company}</p>}
             </div>
 
-            {/* Delivery / site — reduces “Awaiting Details” on the operations side */}
-            <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-4">
-              <p className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#839705]" />
-                Delivery or site details
-              </p>
-              <p className="text-xs text-muted-foreground -mt-2">
-                Optional but recommended — we can quote delivery and schedule
-                accurately when this is filled in.
-              </p>
-
-              <div>
-                <label
-                  htmlFor="address"
-                  className="text-sm font-medium text-foreground"
-                >
-                  Delivery / site address
-                </label>
-                <input
-                  id="address"
-                  type="text"
-                  value={details.address ?? ""}
-                  onChange={(e) => field("address", e.target.value)}
-                  placeholder="12 Smith Street, Sandton, Johannesburg"
-                  className={`mt-1.5 h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                    errors.address ? "border-destructive" : "border-border"
-                  }`}
-                  autoComplete="street-address"
-                />
-                {errors.address && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.address}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="deliveryDate"
-                  className="text-sm font-medium text-foreground flex items-center gap-2"
-                >
-                  <Calendar className="h-3.5 w-3.5" />
-                  Preferred delivery / site date
-                </label>
-                <input
-                  id="deliveryDate"
-                  type="date"
-                  value={details.deliveryDate ?? ""}
-                  onChange={(e) => field("deliveryDate", e.target.value)}
-                  className="mt-1.5 h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="siteNotes"
-                  className="text-sm font-medium text-foreground"
-                >
-                  Access / site notes
-                </label>
-                <input
-                  id="siteNotes"
-                  type="text"
-                  value={details.siteNotes ?? ""}
-                  onChange={(e) => field("siteNotes", e.target.value)}
-                  placeholder="e.g. Access through the back gate, parking in basement"
-                  className="mt-1.5 h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-            </div>
-
+            {/* Message/Notes Section - Added for additional client messages */}
             <div>
-              <label
-                htmlFor="message"
-                className="text-sm font-medium text-foreground flex items-center gap-2"
-              >
+              <label htmlFor="message" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Info className="h-4 w-4 text-[#839705]" />
                 Anything else we should know?
               </label>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Timeline, budget range, brand preferences, or special
-                requirements.
+                Let us know about your timeline, delivery preferences, budget range, or any special requirements.
               </p>
               <textarea
                 id="message"
                 value={details.message ?? ""}
                 onChange={(e) => field("message", e.target.value)}
-                placeholder="e.g., Need delivery by end of month, prefer Dell over HP, budget around R50,000..."
+                placeholder="e.g., Need delivery by end of month, prefer Dell over HP, budget is around R50,000..."
                 className={`mt-1.5 w-full rounded-lg border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  errors.message ? "border-destructive" : "border-border"
+                  errors.message ? 'border-destructive' : 'border-border'
                 }`}
                 rows={4}
               />
-              {errors.message && (
-                <p className="mt-1 text-xs text-destructive">{errors.message}</p>
-              )}
+              {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
             </div>
 
             <div className="flex flex-wrap gap-3 pt-2">
@@ -893,13 +491,12 @@ export default function QuotePage({
                 disabled={isSending}
                 className="rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
-                <Mail className="h-5 w-5" />
-                {isSending ? "Sending..." : "Submit quote request"}
+                <Mail className="h-5 w-5" /> 
+                {isSending ? 'Sending...' : 'Send quote request'}
               </button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Your quote is saved with a reference number. We&apos;ll open your
-              email client so you can send a copy of the request.
+              Sending opens your email client with the quote request pre-filled — just press send.
             </p>
           </form>
         </section>
