@@ -1,4 +1,5 @@
 // src/lib/quote-cart.tsx
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CATALOG, type CatalogItem } from "./catalog";
 
@@ -26,40 +27,32 @@ const STORAGE_KEY = "uits-quote-cart";
 const QuoteCartContext = createContext<QuoteCartValue | undefined>(undefined);
 
 export function QuoteCartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<QuoteLine[]>([]);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
+  const [lines, setLines] = useState<QuoteLine[]>(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as QuoteLine[];
-        // Validate that items exist in catalog
-        const validLines = parsed.filter(line => 
-          CATALOG.some(item => item.id === line.id)
-        );
-        setLines(validLines);
+        return parsed.filter((line) => CATALOG.some((item) => item.id === line.id));
       }
     } catch {
       /* ignore malformed storage */
     }
-    setHydrated(true);
-  }, []);
+    return [];
+  });
 
   useEffect(() => {
-    if (!hydrated) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
     } catch {
       /* ignore storage errors */
     }
-  }, [lines, hydrated]);
+  }, [lines]);
 
   const value = useMemo<QuoteCartValue>(() => {
     const has = (id: string) => lines.some((l) => l.id === id);
     return {
       lines,
-      hydrated,
+      hydrated: true,
       count: lines.length,
       has,
       add: (id, qty = 1) =>
@@ -85,7 +78,7 @@ export function QuoteCartProvider({ children }: { children: ReactNode }) {
         })
         .filter((x): x is { item: CatalogItem; line: QuoteLine } => x !== null),
     };
-  }, [lines, hydrated]);
+  }, [lines]);
 
   return <QuoteCartContext.Provider value={value}>{children}</QuoteCartContext.Provider>;
 }

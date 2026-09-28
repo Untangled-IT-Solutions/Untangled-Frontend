@@ -10,7 +10,9 @@ interface HeaderProps {
   currentPage: 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote';
 }
 
-const NAV_ITEMS = [
+type Page = HeaderProps["currentPage"];
+
+const NAV_ITEMS: Array<{ label: string; page: Page }> = [
   { label: "Home", page: "home" },
   { label: "Products", page: "products" },
   { label: "Refurbished", page: "refurbished" },
@@ -25,7 +27,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
   const [open, setOpen] = useState(false);
   const store = useStore();
 
-  const handleNavigation = (page: any) => {
+  const handleNavigation = (page: Page) => {
     onNavigate(page);
     setOpen(false);
   };
@@ -43,33 +45,23 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
             : 'bg-black border-b border-[#3A4331]'
       }`}
     >
-      <div className="px-2 sm:px-4">
-        <div className="flex items-center justify-between h-24">
+      <div className="mx-auto max-w-[1500px] px-3 sm:px-5 lg:px-8">
+        <div className="flex h-20 items-center justify-between gap-3">
           
-          {/* Brand - Updated Logo Logic */}
+          {/* Brand */}
           <button 
             onClick={() => handleNavigation('home')}
             className="flex items-center shrink-0 cursor-pointer"
           >
-            {/* 
-              Rule:
-              1. Home Page (Any Theme): Use transparent icon (logos-trans.svg or logo-white.svg on dark)
-              2. Internal Pages (Dark Mode): Use white icon (logo-white.svg)
-              3. Internal Pages (Light Mode): Use full logo with text (logo-full.png)
-            */}
             <img
-              src={
-                isHome 
-                  ? (theme === "dark" ? "/logo-white.svg" : "/logos-trans.svg")
-                  : (theme === "dark" ? "/logo-white.svg" : "/logo-transparent.svg")
-              }
+              src={theme === "dark" ? "/logo-white.svg" : "/logos-trans.svg"}
               alt="Untangled IT Solutions"
-              className="h-20 w-auto sm:h-24 md:h-28 object-contain"
+              className="h-14 w-auto object-contain sm:h-16 md:h-[72px]"
             />
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden items-center gap-1.5 md:flex lg:gap-2">
             {NAV_ITEMS.map((item) => {
               if (currentPage === item.page) return null;
               
@@ -77,7 +69,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
                 <button
                   key={item.label}
                   onClick={() => handleNavigation(item.page)}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`rounded-lg px-2.5 py-2 text-xs font-semibold tracking-[0.01em] transition-colors lg:px-3 lg:text-[13px] ${
                     currentPage === item.page
                       ? "text-[#839705]"
                       : isHome
@@ -94,7 +86,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2">
             <button
               onClick={toggle}
               aria-label="Toggle theme"
@@ -137,7 +129,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
             {/* Track Quote Button - ALWAYS VISIBLE */}
             <button
               onClick={() => handleNavigation('track-quote')}
-              className={`relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              className={`relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold tracking-[0.01em] transition-colors lg:gap-2 lg:px-3 lg:text-sm ${
                 isHome
                   ? "text-white hover:bg-white/10 hover:text-white"
                   : theme === "light" 
@@ -163,7 +155,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
             {/* Request a Quote button */}
             <button
               onClick={onRequestQuote}
-              className={`relative hidden xl:inline-flex rounded-lg px-4 py-2 text-sm font-semibold transition-colors items-center gap-2 ${
+              className={`relative hidden items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold tracking-[0.01em] transition-colors xl:inline-flex lg:px-4 lg:text-sm ${
                 isHome
                   ? "bg-[#839705] text-white hover:bg-[#98ab06]"
                   : theme === "light" 

@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 // src/context/ThemeContext.tsx
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 type Theme = "light" | "dark";
 
@@ -11,20 +12,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "light";
     const stored = window.localStorage.getItem("theme") as Theme | null;
-    const initial =
-      stored ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    setTheme(initial);
-    setReady(true);
-  }, []);
+    return stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  });
 
   useEffect(() => {
-    if (!ready) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
     window.localStorage.setItem("theme", theme);
     
@@ -36,7 +30,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
     };
-  }, [theme, ready]);
+  }, [theme]);
 
   const toggle = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 

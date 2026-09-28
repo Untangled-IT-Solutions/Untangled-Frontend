@@ -1,4 +1,4 @@
-// src/App.tsx
+// src/App.tsx (Full updated file)
 import { useState } from 'react'
 import Header from './components/header'
 import Home from './pages/home'
@@ -11,61 +11,28 @@ import SolutionsPage from './pages/solutions'
 import HelpMeChoosePage from './pages/help-me-choose'
 import CartPage from './pages/cart'
 import CheckoutPage from './pages/checkout'
-import TrackQuotePage from './pages/track-quote'
-import TrackOrderPage from './pages/track-order'
+import TrackQuotePage from './pages/track-quote' // <--- IMPORT THIS
 import { StoreProvider } from './lib/store-context'
 import './App.css'
 
-export type Page = 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'track-order'
+// UPDATE: Add 'track-quote' to this type
+export type Page = 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote'
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [showQuote, setShowQuote] = useState(false)
 
-  const navigateTo = (page: Page) => {
-    console.log('📍 Navigating to:', page);
-    setCurrentPage(page)
-    if (page !== 'quote') {
+  const navigateTo = (page: string) => {
+    const allowedPages: Page[] = ['home', 'products', 'refurbished', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote']
+    if (!allowedPages.includes(page as Page)) return
+    const nextPage = page as Page
+    setCurrentPage(nextPage)
+    if (nextPage !== 'quote') {
       setShowQuote(false)
     }
   }
 
-  // --- NEW: Navigation function that supports data/params ---
-  const handleNavigate = (page: string, data?: any) => {
-    console.log('📍 Navigating with data:', page, data);
-    
-    // Handle track-order with params
-    if (page === 'track-order') {
-      // Set current page and store data in a state or URL
-      setCurrentPage('track-order');
-      // You can pass data via state or URL params
-      // For simplicity, we'll use URL params and let TrackOrderPage read them
-      if (data) {
-        // Update URL with query params
-        const queryString = new URLSearchParams(data).toString();
-        window.history.pushState(null, '', `?page=track-order&${queryString}`);
-      }
-      return;
-    }
-
-    // Handle other pages
-    if (page === 'track-quote') {
-      setCurrentPage('track-quote');
-      if (data) {
-        const queryString = new URLSearchParams(data).toString();
-        window.history.pushState(null, '', `?page=track-quote&${queryString}`);
-      }
-      return;
-    }
-
-    setCurrentPage(page as Page);
-    if (page !== 'quote') {
-      setShowQuote(false);
-    }
-  };
-
   const openQuote = () => {
-    console.log('Opening quote modal');
     setShowQuote(true)
   }
 
@@ -81,7 +48,7 @@ function AppContent() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <Home onNavigate={navigateTo} />
+        return <Home />
       case 'products':
         return <ProductsPage onNavigate={navigateTo} />
       case 'refurbished':
@@ -97,22 +64,19 @@ function AppContent() {
       case 'cart':
         return <CartPage onNavigate={navigateTo} />
       case 'checkout':
-        // ✅ FIX: Pass onNavigate prop to CheckoutPage
-        return <CheckoutPage onNavigate={handleNavigate} />
+        return <CheckoutPage />
       case 'quote':
         return (
           <QuotePage 
             onClose={closeQuote} 
             onNavigateToStore={navigateToStore} 
-            onNavigate={navigateTo}
+            onNavigate={navigateTo} // <--- PASS THIS PROP
           />
         );
-      case 'track-quote':
+      case 'track-quote': // <--- ADD THIS CASE
         return <TrackQuotePage />
-      case 'track-order':
-        return <TrackOrderPage />
       default:
-        return <Home onNavigate={navigateTo} />
+        return <Home />
     }
   }
 
@@ -135,7 +99,7 @@ function AppContent() {
               <QuotePage 
                 onClose={closeQuote}
                 onNavigateToStore={navigateToStore}
-                onNavigate={navigateTo}
+                onNavigate={navigateTo} // <--- PASS THIS PROP HERE TOO
               />
             </div>
           </div>

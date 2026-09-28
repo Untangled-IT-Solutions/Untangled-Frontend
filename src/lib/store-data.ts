@@ -16,7 +16,6 @@ export type Product = {
   grade?: string;
   warranty?: string;
   keywords?: string[];
-  image?: string; 
 };
 
 export const PRODUCT_CATEGORIES = [
@@ -51,94 +50,7 @@ export const availabilityLabel: Record<Availability, string> = {
 
 export const products: Product[] = [
   // ============================================================
-  // FEATURED PRODUCTS (for home page carousel) - ADD TO CART
-  // ============================================================
-  {
-    id: "featured-lat-5410",
-    name: "Dell Latitude 5410",
-    brand: "Dell",
-    category: "Laptops",
-    segment: "products",
-    shortDescription: "Intel Core i5 10th Gen, 8GB RAM, 256GB SSD",
-    specs: [
-      "Intel Core i5 10th Gen",
-      "8GB RAM",
-      "256GB NVMe SSD",
-      '14" FHD Display',
-      "Windows 11 Pro",
-      "3 Month Back-to-base Warranty"
-    ],
-    price: 15950,
-    availability: "in-stock",
-    quoteOnly: false,
-    warranty: "3 Month Back-to-base Warranty",
-    image: "/laptop-1.png",
-  },
-  {
-    id: "featured-lat-5420",
-    name: "Dell Latitude 5420",
-    brand: "Dell",
-    category: "Laptops",
-    segment: "products",
-    shortDescription: "Intel Core i5 11th Gen, 16GB RAM, 512GB SSD",
-    specs: [
-      "Intel Core i5 11th Gen",
-      "16GB RAM",
-      "512GB NVMe SSD",
-      '14" FHD Display',
-      "Backlit Keyboard",
-      "3 Month Back-to-base Warranty"
-    ],
-    price: 15950,
-    availability: "in-stock",
-    quoteOnly: false,
-    warranty: "3 Month Back-to-base Warranty",
-    image: "/laptop-2.png",
-  },
-  {
-    id: "featured-lat-5440",
-    name: "Dell Latitude 5440",
-    brand: "Dell",
-    category: "Laptops",
-    segment: "products",
-    shortDescription: "Intel Core i7 12th Gen, 16GB RAM, 512GB SSD",
-    specs: [
-      "Intel Core i7 12th Gen",
-      "16GB RAM",
-      "512GB NVMe SSD",
-      '14" FHD Display',
-      "Thunderbolt 4",
-      "3 Month Back-to-base Warranty"
-    ],
-    price: 18950,
-    availability: "in-stock",
-    quoteOnly: false,
-    warranty: "3 Month Back-to-base Warranty",
-    image: "/laptop-3.png",
-  },
-  {
-    id: "featured-monitor",
-    name: 'Dell 24" Monitor - P2422H',
-    brand: "Dell",
-    category: "Monitors",
-    segment: "products",
-    shortDescription: '24" IPS FHD Panel, 1920 x 1080 @ 60Hz',
-    specs: [
-      '24" IPS FHD Panel',
-      "1920 x 1080 @ 60Hz",
-      "HDMI, DisplayPort, VGA",
-      "Height adjustable stand",
-      "Ultrathin bezels"
-    ],
-    price: 2950,
-    availability: "in-stock",
-    quoteOnly: false,
-    warranty: "3 Month Warranty",
-    image: "/monitor-1.png",
-  },
-
-  // ============================================================
-  // BUSINESS LAPTOPS - REQUEST QUOTE
+  // BUSINESS LAPTOPS
   // ============================================================
   {
     id: "lat-5440",
@@ -153,7 +65,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year ProSupport",
     keywords: ["business", "laptop", "dell", "latitude", "windows"],
-    image: "/dell5440.png",
   },
   {
     id: "tp-t14",
@@ -168,7 +79,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year on-site",
     keywords: ["business", "laptop", "lenovo", "thinkpad", "tpm"],
-    image: "/lenovot14.avif",
   },
   {
     id: "lat-7440",
@@ -183,11 +93,10 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year ProSupport Plus",
     keywords: ["business", "premium", "laptop", "dell", "latitude"],
-    image: "/dell7440.avif",
   },
 
   // ============================================================
-  // DESKTOPS AND WORKSTATIONS - REQUEST QUOTE
+  // DESKTOPS AND WORKSTATIONS
   // ============================================================
   {
     id: "opti-7010-new",
@@ -202,7 +111,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year on-site",
     keywords: ["desktop", "business", "dell", "optiplex", "windows"],
-    image: "/dell7010.avif",
   },
   {
     id: "ts-p3",
@@ -217,7 +125,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year on-site",
     keywords: ["workstation", "professional", "lenovo", "thinkstation", "xeon"],
-    image: "/lenovop13.avif",
   },
   {
     id: "prec-3660-new",
@@ -232,15 +139,14 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year ProSupport Plus",
     keywords: ["workstation", "high-performance", "dell", "precision", "rtx"],
-    image: "/dell3660.avif",
   },
 
   // ============================================================
-  // PROFESSIONAL DISPLAYS - REQUEST QUOTE
+  // PROFESSIONAL DISPLAYS
   // ============================================================
   {
     id: "dell-u2723qe-new",
-    name: 'Dell UltraSharp 27"',
+    name: "Dell UltraSharp 27\"",
     brand: "Dell",
     category: "Monitors",
     segment: "products",
@@ -251,7 +157,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year exchange",
     keywords: ["monitor", "display", "dell", "ultrasharp", "4k"],
-    image: "/dell27.avif",
   },
   {
     id: "lenovo-p27h",
@@ -266,11 +171,10 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year warranty",
     keywords: ["monitor", "display", "lenovo", "thinkvision", "usb-c"],
-    image: "/lenovop27h-30.avif",
   },
   {
     id: "dell-u3423we",
-    name: 'Dell UltraSharp 34" Curved',
+    name: "Dell UltraSharp 34\" Curved",
     brand: "Dell",
     category: "Monitors",
     segment: "products",
@@ -281,11 +185,10 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year exchange",
     keywords: ["monitor", "curved", "dell", "ultrasharp", "productivity"],
-    image: "/Dell Ultra Curved.avif",
   },
 
   // ============================================================
-  // ACCESSORIES - REQUEST QUOTE
+  // ACCESSORIES
   // ============================================================
   {
     id: "dell-ud22",
@@ -300,7 +203,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year warranty",
     keywords: ["dock", "docking station", "dell", "usb-c", "hybrid"],
-    image: "/Dell Universal Dock UD22.jpg",
   },
   {
     id: "lenovo-dock-gen2",
@@ -315,7 +217,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "3-year warranty",
     keywords: ["dock", "docking station", "lenovo", "thinkpad", "usb-c"],
-    image: "/Lenovo ThinkPad USB-C Dock Gen 2.jpg",
   },
   {
     id: "dell-headset",
@@ -330,7 +231,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "1-year warranty",
     keywords: ["headset", "audio", "dell", "meetings", "calls"],
-    image: "/Dell Pro Stereo Headset.avif",
   },
   {
     id: "lenovo-combo",
@@ -345,11 +245,10 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "1-year warranty",
     keywords: ["keyboard", "mouse", "wireless", "lenovo", "combo"],
-    image: "/Lenovo Professional Wireless Combo.avif",
   },
 
   // ============================================================
-  // TECHNICAL SERVICES - REQUEST QUOTE
+  // TECHNICAL SERVICES (kept as products for consistency)
   // ============================================================
   {
     id: "service-deployment",
@@ -364,7 +263,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "Service-based",
     keywords: ["service", "deployment", "setup", "rollout"],
-    image: "/Device Setup and Deployment.avif",
   },
   {
     id: "service-lifecycle",
@@ -379,7 +277,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "Service-based",
     keywords: ["service", "lifecycle", "optimization", "upgrade"],
-    image: "/Device Lifecycle Optimization.avif",
   },
   {
     id: "service-troubleshooting",
@@ -394,7 +291,6 @@ export const products: Product[] = [
     quoteOnly: true,
     warranty: "Service-based",
     keywords: ["service", "troubleshooting", "diagnostics", "repair"],
-    image: "/Hardware and Software Troubleshooting.avif",
   },
 ];
 
@@ -443,16 +339,8 @@ export const services: ServiceItem[] = [
   { id: "business-technology", name: "Business Technology Solutions", description: "End-to-end solutions built around business outcomes.", group: "solutions" },
 ];
 
-// ============================================================
-// HELPER FUNCTIONS
-// ============================================================
-
 export function formatPrice(value: number) {
   return "R " + value.toLocaleString("en-ZA");
-}
-
-export function productById(id: string): Product | undefined {
-  return products.find((p) => p.id === id);
 }
 
 export function searchAll(query: string) {
