@@ -2,7 +2,7 @@ import { createServer } from 'node:http'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
 import { createReadStream } from 'node:fs'
-import { dirname, extname, join, normalize } from 'node:path'
+import { dirname, extname, join, normalize, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const serverDirectory = dirname(fileURLToPath(import.meta.url))
@@ -16,6 +16,9 @@ const allowedOrigins = new Set(
     .map((origin) => origin.trim())
     .filter(Boolean),
 )
+const rateBuckets = new Map()
+const RATE_WINDOW_MS = 15 * 60 * 1000
+const RATE_LIMIT = 60
 
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -50,7 +53,7 @@ let pendingWrite = Promise.resolve()
 function persistDatabase() {
   pendingWrite = pendingWrite.then(async () => {
     const temporaryFile = `${dataFile}.tmp`
-    await writeFile(temporaryFile, JSON.stringify(database, null, 2), 'utf8')
+    await writeFile(temporaryFile, JSON.stringify(database, null, 2), { encoding: 'utf8', mode: 0o600 })
     await rename(temporaryFile, dataFile)
   })
   return pendingWrite
@@ -70,9 +73,41 @@ function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
-    'X-Content-Type-Options': 'nosniff',
+    ...securityHeaders(),
   })
   response.end(JSON.stringify(payload))
+}
+
+function securityHeaders() {
+  return {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'",
+  }
+}
+
+function clientAddress(request) {
+  return request.socket.remoteAddress || 'unknown'
+}
+
+function enforceRateLimit(request, response) {
+  const now = Date.now()
+  const key = clientAddress(request)
+  const bucket = (rateBuckets.get(key) || []).filter((time) => now - time < RATE_WINDOW_MS)
+  if (bucket.length >= RATE_LIMIT) {
+    sendJson(response, 429, { success: false, message: 'Too many requests. Try again later.' })
+    return false
+  }
+  bucket.push(now)
+  rateBuckets.set(key, bucket)
+  if (rateBuckets.size > 10_000) {
+    for (const [address, times] of rateBuckets) {
+      if (!times.some((time) => now - time < RATE_WINDOW_MS)) rateBuckets.delete(address)
+    }
+  }
+  return true
 }
 
 async function readJson(request) {
@@ -92,14 +127,13 @@ function cleanText(value, maximumLength = 500) {
   return typeof value === 'string' ? value.trim().slice(0, maximumLength) : ''
 }
 
-function cleanItems(items, includePrice = false) {
+function cleanItems(items) {
   if (!Array.isArray(items)) return []
   return items.slice(0, 100).map((item) => ({
     id: cleanText(item?.id, 100),
     name: cleanText(item?.name, 200),
     ...(item?.kind === 'service' || item?.kind === 'product' ? { kind: item.kind } : {}),
     qty: Math.max(1, Math.min(999, Number(item?.qty) || 1)),
-    ...(includePrice ? { price: Math.max(0, Number(item?.price) || 0) } : {}),
   })).filter((item) => item.id && item.name)
 }
 
@@ -114,7 +148,7 @@ function validateContact(payload) {
 }
 
 function createReference(prefix) {
-  return `${prefix}-${randomBytes(3).toString('hex').toUpperCase()}`
+  return `${prefix}-${randomBytes(8).toString('hex').toUpperCase()}`
 }
 
 async function handleApi(request, response, url) {
@@ -124,6 +158,7 @@ async function handleApi(request, response, url) {
   }
 
   if (request.method === 'POST' && url.pathname === '/api/quotes') {
+    if (!enforceRateLimit(request, response)) return
     const payload = await readJson(request)
     const validationError = validateContact(payload)
     if (validationError) return sendJson(response, 400, { success: false, message: validationError })
@@ -148,22 +183,33 @@ async function handleApi(request, response, url) {
     return
   }
 
-  if (request.method === 'GET' && url.pathname === '/api/quotes/track') {
-    const reference = cleanText(url.searchParams.get('ref'), 50).toUpperCase()
-    const email = cleanText(url.searchParams.get('email'), 200).toLowerCase()
+  if (request.method === 'POST' && url.pathname === '/api/quotes/track') {
+    if (!enforceRateLimit(request, response)) return
+    const payload = await readJson(request)
+    const reference = cleanText(payload.reference, 50).toUpperCase()
+    const email = cleanText(payload.email, 200).toLowerCase()
     if (!reference || !email) return sendJson(response, 400, { success: false, message: 'Reference and email are required' })
 
     const quote = database.quotes.find((item) => item.reference === reference && item.email === email)
-    sendJson(response, 200, { success: Boolean(quote), quote: quote || null })
+    const publicQuote = quote ? {
+      reference: quote.reference,
+      status: quote.status,
+      items: quote.items,
+      replyMessage: quote.replyMessage,
+      repliedAt: quote.repliedAt,
+      createdAt: quote.createdAt,
+    } : null
+    sendJson(response, 200, { success: Boolean(publicQuote), quote: publicQuote })
     return
   }
 
   if (request.method === 'POST' && url.pathname === '/api/orders') {
+    if (!enforceRateLimit(request, response)) return
     const payload = await readJson(request)
     const validationError = validateContact(payload)
     if (validationError) return sendJson(response, 400, { success: false, message: validationError })
     const address = cleanText(payload.address, 500)
-    const items = cleanItems(payload.items, true)
+    const items = cleanItems(payload.items)
     if (!address) return sendJson(response, 400, { success: false, message: 'Please provide a delivery address' })
     if (items.length === 0) return sendJson(response, 400, { success: false, message: 'The order must contain at least one item' })
 
@@ -177,7 +223,7 @@ async function handleApi(request, response, url) {
       address,
       notes: cleanText(payload.notes, 2000),
       items,
-      total: Math.max(0, Number(payload.total) || 0),
+      pricingStatus: 'pending_server_quote',
       status: 'received',
       createdAt: new Date().toISOString(),
     }
@@ -209,7 +255,9 @@ async function serveFrontend(response, pathname) {
   }
   const relativePath = normalize(decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\/+/, ''))
   const requestedFile = join(distributionDirectory, relativePath)
-  const safeFile = requestedFile.startsWith(distributionDirectory) && await fileExists(requestedFile)
+  const pathFromDist = relative(distributionDirectory, requestedFile)
+  const insideDistribution = pathFromDist && pathFromDist !== '..' && !pathFromDist.startsWith(`..${sep}`) && !pathFromDist.includes(`..${sep}`)
+  const safeFile = insideDistribution && await fileExists(requestedFile)
     ? requestedFile
     : join(distributionDirectory, 'index.html')
 
@@ -220,7 +268,7 @@ async function serveFrontend(response, pathname) {
 
   response.writeHead(200, {
     'Content-Type': contentTypes[extname(safeFile)] || 'application/octet-stream',
-    'X-Content-Type-Options': 'nosniff',
+    ...securityHeaders(),
   })
   createReadStream(safeFile).pipe(response)
 }
@@ -240,7 +288,7 @@ const server = createServer(async (request, response) => {
     else sendJson(response, 405, { success: false, message: 'Method not allowed' })
   } catch (error) {
     console.error(error)
-    sendJson(response, 500, { success: false, message: error instanceof Error ? error.message : 'Internal server error' })
+    sendJson(response, 500, { success: false, message: 'Internal server error' })
   }
 })
 

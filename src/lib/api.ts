@@ -61,7 +61,11 @@ export interface TrackedQuote {
 }
 
 export async function trackQuote(reference: string, email: string): Promise<{ success: boolean; quote: TrackedQuote | null }> {
-  const response = await fetch(`${API_BASE_URL}/quotes/track?ref=${encodeURIComponent(reference)}&email=${encodeURIComponent(email)}`);
+  const response = await fetch(`${API_BASE_URL}/quotes/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reference, email }),
+  });
   return handleResponse<{ success: boolean; quote: TrackedQuote | null }>(response);
 }
 
