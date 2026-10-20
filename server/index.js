@@ -1,17 +1,13 @@
 import { createServer } from 'node:http'
 import { randomBytes, randomUUID } from 'node:crypto'
-import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
-import { createReadStream } from 'node:fs'
-import { dirname, extname, join, normalize, relative, sep } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { createClient } from '@supabase/supabase-js'
+import 'dotenv/config'
 
-const serverDirectory = dirname(fileURLToPath(import.meta.url))
-const projectDirectory = join(serverDirectory, '..')
-const distributionDirectory = join(projectDirectory, 'dist')
-const dataFile = process.env.DATA_FILE || join(serverDirectory, 'data', 'db.json')
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+
 const port = Number(process.env.PORT || 5000)
 const allowedOrigins = new Set(
-  (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
@@ -19,45 +15,6 @@ const allowedOrigins = new Set(
 const rateBuckets = new Map()
 const RATE_WINDOW_MS = 15 * 60 * 1000
 const RATE_LIMIT = 60
-
-const contentTypes = {
-  '.css': 'text/css; charset=utf-8',
-  '.html': 'text/html; charset=utf-8',
-  '.ico': 'image/x-icon',
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
-  '.webp': 'image/webp',
-}
-
-async function loadDatabase() {
-  await mkdir(dirname(dataFile), { recursive: true })
-  try {
-    const parsed = JSON.parse(await readFile(dataFile, 'utf8'))
-    return {
-      quotes: Array.isArray(parsed.quotes) ? parsed.quotes : [],
-      orders: Array.isArray(parsed.orders) ? parsed.orders : [],
-    }
-  } catch (error) {
-    if (error?.code !== 'ENOENT') console.error('Could not read API data; starting with an empty database.', error)
-    return { quotes: [], orders: [] }
-  }
-}
-
-const database = await loadDatabase()
-let pendingWrite = Promise.resolve()
-
-function persistDatabase() {
-  pendingWrite = pendingWrite.then(async () => {
-    const temporaryFile = `${dataFile}.tmp`
-    await writeFile(temporaryFile, JSON.stringify(database, null, 2), { encoding: 'utf8', mode: 0o600 })
-    await rename(temporaryFile, dataFile)
-  })
-  return pendingWrite
-}
 
 function setCorsHeaders(request, response) {
   const origin = request.headers.origin
@@ -102,11 +59,6 @@ function enforceRateLimit(request, response) {
   }
   bucket.push(now)
   rateBuckets.set(key, bucket)
-  if (rateBuckets.size > 10_000) {
-    for (const [address, times] of rateBuckets) {
-      if (!times.some((time) => now - time < RATE_WINDOW_MS)) rateBuckets.delete(address)
-    }
-  }
   return true
 }
 
@@ -153,7 +105,7 @@ function createReference(prefix) {
 
 async function handleApi(request, response, url) {
   if (request.method === 'GET' && url.pathname === '/api') {
-    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions API' })
+    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions API (Supabase)' })
     return
   }
 
@@ -166,19 +118,24 @@ async function handleApi(request, response, url) {
     const quote = {
       id: randomUUID(),
       reference: createReference('UQ'),
-      customerName: cleanText(payload.customerName, 100),
+      customer_name: cleanText(payload.customerName, 100),
       company: cleanText(payload.company, 100),
       email: cleanText(payload.email, 200).toLowerCase(),
       phone: cleanText(payload.phone, 50),
       notes: cleanText(payload.notes, 5000),
       items: cleanItems(payload.items),
       status: 'received',
-      replyMessage: null,
-      repliedAt: null,
-      createdAt: new Date().toISOString(),
+      reply_message: null,
+      replied_at: null,
+      created_at: new Date().toISOString(),
     }
-    database.quotes.push(quote)
-    await persistDatabase()
+
+    const { error } = await supabase.from('quotes').insert(quote)
+    if (error) {
+      console.error('Supabase error:', error)
+      return sendJson(response, 500, { success: false, message: 'Database error' })
+    }
+
     sendJson(response, 201, { success: true, reference: quote.reference })
     return
   }
@@ -190,16 +147,27 @@ async function handleApi(request, response, url) {
     const email = cleanText(payload.email, 200).toLowerCase()
     if (!reference || !email) return sendJson(response, 400, { success: false, message: 'Reference and email are required' })
 
-    const quote = database.quotes.find((item) => item.reference === reference && item.email === email)
-    const publicQuote = quote ? {
+    const { data: quote, error } = await supabase
+      .from('quotes')
+      .select('*')
+      .eq('reference', reference)
+      .eq('email', email)
+      .single()
+
+    if (error || !quote) {
+      return sendJson(response, 200, { success: false, quote: null })
+    }
+
+    const publicQuote = {
       reference: quote.reference,
       status: quote.status,
       items: quote.items,
-      replyMessage: quote.replyMessage,
-      repliedAt: quote.repliedAt,
-      createdAt: quote.createdAt,
-    } : null
-    sendJson(response, 200, { success: Boolean(publicQuote), quote: publicQuote })
+      replyMessage: quote.reply_message,
+      repliedAt: quote.replied_at,
+      createdAt: quote.created_at,
+    }
+    
+    sendJson(response, 200, { success: true, quote: publicQuote })
     return
   }
 
@@ -215,62 +183,30 @@ async function handleApi(request, response, url) {
 
     const order = {
       id: randomUUID(),
-      orderId: createReference('ORD'),
-      customerName: cleanText(payload.customerName, 100),
+      order_id: createReference('ORD'),
+      customer_name: cleanText(payload.customerName, 100),
       company: cleanText(payload.company, 100),
       email: cleanText(payload.email, 200).toLowerCase(),
       phone: cleanText(payload.phone, 50),
       address,
       notes: cleanText(payload.notes, 2000),
       items,
-      pricingStatus: 'pending_server_quote',
+      pricing_status: 'pending_server_quote',
       status: 'received',
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     }
-    database.orders.push(order)
-    await persistDatabase()
-    sendJson(response, 201, { success: true, orderId: order.orderId })
+
+    const { error } = await supabase.from('orders').insert(order)
+    if (error) {
+      console.error('Supabase error:', error)
+      return sendJson(response, 500, { success: false, message: 'Database error' })
+    }
+
+    sendJson(response, 201, { success: true, orderId: order.order_id })
     return
   }
 
   sendJson(response, 404, { success: false, message: 'API route not found' })
-}
-
-async function fileExists(path) {
-  try {
-    return (await stat(path)).isFile()
-  } catch {
-    return false
-  }
-}
-
-async function serveFrontend(response, pathname) {
-  let decodedPath
-  try {
-    decodedPath = decodeURIComponent(pathname)
-  } catch {
-    response.writeHead(400)
-    response.end('Bad request')
-    return
-  }
-  const relativePath = normalize(decodedPath === '/' ? 'index.html' : decodedPath.replace(/^\/+/, ''))
-  const requestedFile = join(distributionDirectory, relativePath)
-  const pathFromDist = relative(distributionDirectory, requestedFile)
-  const insideDistribution = pathFromDist && pathFromDist !== '..' && !pathFromDist.startsWith(`..${sep}`) && !pathFromDist.includes(`..${sep}`)
-  const safeFile = insideDistribution && await fileExists(requestedFile)
-    ? requestedFile
-    : join(distributionDirectory, 'index.html')
-
-  if (!(await fileExists(safeFile))) {
-    sendJson(response, 404, { success: false, message: 'Frontend build not found. Run npm run build first.' })
-    return
-  }
-
-  response.writeHead(200, {
-    'Content-Type': contentTypes[extname(safeFile)] || 'application/octet-stream',
-    ...securityHeaders(),
-  })
-  createReadStream(safeFile).pipe(response)
 }
 
 const server = createServer(async (request, response) => {
@@ -284,8 +220,7 @@ const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || '/', `http://${request.headers.host || 'localhost'}`)
     if (url.pathname.startsWith('/api')) await handleApi(request, response, url)
-    else if (request.method === 'GET' || request.method === 'HEAD') await serveFrontend(response, url.pathname)
-    else sendJson(response, 405, { success: false, message: 'Method not allowed' })
+    else sendJson(response, 404, { success: false, message: 'Not found. Frontend is served by Vite or Vercel.' })
   } catch (error) {
     console.error(error)
     sendJson(response, 500, { success: false, message: 'Internal server error' })
