@@ -102,3 +102,11 @@ export async function submitOrder(payload: SubmitOrderPayload): Promise<SubmitOr
   });
   return handleResponse<SubmitOrderResponse>(response);
 }
+// Wake up the free Render server when the user visits the site
+export async function wakeUpServer() {
+  try {
+    await fetch(`${API_BASE_URL}`);
+  } catch (error) {
+    // Ignore errors, this is just a gentle wake-up nudge
+  }
+}

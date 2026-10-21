@@ -1,6 +1,6 @@
 // src/App.tsx (Full updated file)
-import { useState } from 'react'
-import Header from './components/header'
+import { useState, useEffect } from 'react'
+import { wakeUpServer } from './lib/api'
 import Home from './pages/home'
 import QuotePage from './pages/quote'
 import ProductsPage from './pages/products'
@@ -110,6 +110,10 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    wakeUpServer()
+  }, [])
+
   return (
     <StoreProvider>
       <AppContent />
