@@ -1,17 +1,15 @@
 import { createServer } from 'node:http'
 import { randomBytes, randomUUID } from 'node:crypto'
-import { createClient } from '@supabase/supabase-js'
+import pg from 'pg'
 import 'dotenv/config'
 
-const supabase = createClient(
-  'https://104.18.22.5', 
-  process.env.SUPABASE_SERVICE_KEY,
-  {
-    global: {
-      headers: { 'Host': 'yncqqwiuodbpgfcxxkzo.supabase.co' }
-    }
-  }
-)
+const { Pool } = pg
+
+// Use the connection string from Render's Environment Variables
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+})
 
 const port = Number(process.env.PORT || 5000)
 const allowedOrigins = new Set(
@@ -113,7 +111,7 @@ function createReference(prefix) {
 
 async function handleApi(request, response, url) {
   if (request.method === 'GET' && url.pathname === '/api') {
-    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions API (Supabase)' })
+    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions API (Postgres)' })
     return
   }
 
@@ -138,9 +136,18 @@ async function handleApi(request, response, url) {
       created_at: new Date().toISOString(),
     }
 
-    const { error } = await supabase.from('quotes').insert(quote)
-    if (error) {
-      console.error('Supabase error:', error)
+    try {
+      await pool.query(
+        `INSERT INTO quotes (id, reference, customer_name, company, email, phone, notes, items, status, reply_message, replied_at, created_at) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [
+          quote.id, quote.reference, quote.customer_name, quote.company, 
+          quote.email, quote.phone, quote.notes, JSON.stringify(quote.items), 
+          quote.status, quote.reply_message, quote.replied_at, quote.created_at
+        ]
+      )
+    } catch (err) {
+      console.error('Database error:', err)
       return sendJson(response, 500, { success: false, message: 'Database error' })
     }
 
@@ -155,14 +162,19 @@ async function handleApi(request, response, url) {
     const email = cleanText(payload.email, 200).toLowerCase()
     if (!reference || !email) return sendJson(response, 400, { success: false, message: 'Reference and email are required' })
 
-    const { data: quote, error } = await supabase
-      .from('quotes')
-      .select('*')
-      .eq('reference', reference)
-      .eq('email', email)
-      .single()
+    let quote
+    try {
+      const res = await pool.query(
+        'SELECT * FROM quotes WHERE reference = $1 AND email = $2 LIMIT 1',
+        [reference, email]
+      )
+      quote = res.rows[0]
+    } catch (err) {
+      console.error('Database error:', err)
+      return sendJson(response, 500, { success: false, message: 'Database error' })
+    }
 
-    if (error || !quote) {
+    if (!quote) {
       return sendJson(response, 200, { success: false, quote: null })
     }
 
@@ -204,9 +216,18 @@ async function handleApi(request, response, url) {
       created_at: new Date().toISOString(),
     }
 
-    const { error } = await supabase.from('orders').insert(order)
-    if (error) {
-      console.error('Supabase error:', error)
+    try {
+      await pool.query(
+        `INSERT INTO orders (id, order_id, customer_name, company, email, phone, address, notes, items, pricing_status, status, created_at) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [
+          order.id, order.order_id, order.customer_name, order.company, 
+          order.email, order.phone, order.address, order.notes, 
+          JSON.stringify(order.items), order.pricing_status, order.status, order.created_at
+        ]
+      )
+    } catch (err) {
+      console.error('Database error:', err)
       return sendJson(response, 500, { success: false, message: 'Database error' })
     }
 
