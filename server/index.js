@@ -1,9 +1,15 @@
 import { createServer } from 'node:http'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
+import dns from 'node:dns'
+dns.setDefaultResultOrder('ipv4first')
 import 'dotenv/config'
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+const supabase = createClient(
+  process.env.SUPABASE_URL, 
+  process.env.SUPABASE_SERVICE_KEY,
+  { global: { fetch: fetch } }
+)
 
 const port = Number(process.env.PORT || 5000)
 const allowedOrigins = new Set(
