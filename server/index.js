@@ -151,6 +151,84 @@ async function handleApi(request, response, url) {
       return sendJson(response, 500, { success: false, message: 'Database error' })
     }
 
+    // --- PROFESSIONAL EMAIL CODE ---
+    try {
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          
+          <div style="background-color: #83B70F; padding: 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">UNTANGLED IT SOLUTIONS</h1>
+          </div>
+
+          <div style="padding: 30px;">
+            <h2 style="color: #111; margin-top: 0;">New Quote Request Received</h2>
+            <p style="font-size: 16px;">A customer has just submitted a new quote request via the website.</p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 120px;">Reference:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; color: #83B70F; font-weight: bold;">${quote.reference}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Name:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.customer_name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Company:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.company || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="mailto:${quote.email}">${quote.email}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Phone:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.phone}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Notes:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.notes || 'None'}</td>
+              </tr>
+            </table>
+
+            <h3 style="margin-top: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Items Requested:</h3>
+            <ul style="padding-left: 20px; line-height: 1.6;">
+              ${quote.items.map(item => `<li><strong>${item.name}</strong> (Qty: ${item.qty})</li>`).join('')}
+            </ul>
+            
+            <div style="margin-top: 40px; text-align: center;">
+              <a href="https://untangled-frontend.vercel.app/" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">View Website</a>
+            </div>
+          </div>
+
+          <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #e0e0e0;">
+            © ${new Date().getFullYear()} Untangled IT Solutions. All rights reserved.
+          </div>
+        </div>
+      `;
+
+      const emailRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+        },
+        body: JSON.stringify({
+          from: 'Untangled Website <onboarding@resend.dev>',
+          to: ['nhlatshwayo@untangledits.co.za'], 
+          subject: `New Quote Request: ${quote.reference} - ${quote.customer_name}`,
+          html: emailHtml
+        })
+      });
+      
+      if (!emailRes.ok) {
+        console.error('Resend API Error:', await emailRes.text());
+      }
+    } catch (emailError) {
+      console.error('Failed to send email:', emailError);
+    }
+    // --- END EMAIL CODE ---
+
     sendJson(response, 201, { success: true, reference: quote.reference })
     return
   }
