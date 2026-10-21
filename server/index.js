@@ -151,83 +151,87 @@ async function handleApi(request, response, url) {
       return sendJson(response, 500, { success: false, message: 'Database error' })
     }
 
-    // --- PROFESSIONAL EMAIL CODE ---
+    // --- DUAL EMAIL SYSTEM ---
     try {
-      const emailHtml = `
+      // 1. EMAIL TO STAFF (Internal Notification)
+      const staffEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-          
           <div style="background-color: #83B70F; padding: 20px; text-align: center;">
             <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">UNTANGLED IT SOLUTIONS</h1>
           </div>
-
           <div style="padding: 30px;">
-            <h2 style="color: #111; margin-top: 0;">New Quote Request Received</h2>
-            <p style="font-size: 16px;">A customer has just submitted a new quote request via the website.</p>
-            
+            <h2 style="color: #111; margin-top: 0;">New Quote Request (Action Required)</h2>
+            <p style="font-size: 16px;">A customer has submitted a new quote request. Please process this in Nexus.</p>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 120px;">Reference:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; color: #83B70F; font-weight: bold;">${quote.reference}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Name:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.customer_name}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Company:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.company || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="mailto:${quote.email}">${quote.email}</a></td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Phone:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.phone}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Notes:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.notes || 'None'}</td>
-              </tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 120px;">Reference:</td><td style="padding: 10px; border-bottom: 1px solid #eee; color: #83B70F; font-weight: bold;">${quote.reference}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Name:</td><td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.customer_name}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Company:</td><td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.company || 'N/A'}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td><td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.email}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Phone:</td><td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.phone}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Notes:</td><td style="padding: 10px; border-bottom: 1px solid #eee;">${quote.notes || 'None'}</td></tr>
             </table>
-
             <h3 style="margin-top: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Items Requested:</h3>
             <ul style="padding-left: 20px; line-height: 1.6;">
               ${quote.items.map(item => `<li><strong>${item.name}</strong> (Qty: ${item.qty})</li>`).join('')}
             </ul>
+          </div>
+        </div>
+      `;
+
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
+        body: JSON.stringify({
+          from: 'Untangled Website <onboarding@resend.dev>',
+          to: ['nhlatshwayo@untangledits.co.za', 'bmoremi@untangledits.co.za', 'gwesi@untangledits.co.za', 'uhadebe@untangledits.co.za'],
+          subject: `New Quote: ${quote.reference} - ${quote.customer_name}`,
+          html: staffEmailHtml
+        })
+      });
+
+      // 2. EMAIL TO CLIENT (Auto-Responder with Reference)
+      const clientEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #83B70F; padding: 20px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">UNTANGLED IT SOLUTIONS</h1>
+          </div>
+          <div style="padding: 30px;">
+            <h2 style="color: #111; margin-top: 0;">Quote Request Received!</h2>
+            <p style="font-size: 16px;">Hi ${quote.customer_name},</p>
+            <p style="font-size: 16px;">Thank you for requesting a quote from Untangled IT Solutions. We have received your request and our team is currently reviewing it.</p>
             
-            <div style="margin-top: 40px; text-align: center;">
-              <a href="https://untangled-frontend.vercel.app/" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">View Website</a>
+            <div style="background-color: #f8f9fa; border-left: 4px solid #83B70F; padding: 15px; margin: 25px 0;">
+              <p style="margin: 0; font-size: 16px;">Your Quote Reference Number is:</p>
+              <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #83B70F;">${quote.reference}</p>
+            </div>
+
+            <p style="font-size: 16px;">You can track the status of your quote at any time by clicking the button below and entering this reference number along with your email address.</p>
+            
+            <div style="margin-top: 30px; text-align: center;">
+              <a href="https://untangled-frontend.vercel.app/" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Track My Quote</a>
             </div>
           </div>
-
           <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #e0e0e0;">
             © ${new Date().getFullYear()} Untangled IT Solutions. All rights reserved.
           </div>
         </div>
       `;
 
-      const emailRes = await fetch('https://api.resend.com/emails', {
+      await fetch('https://api.resend.com/emails', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
-          from: 'Untangled Website <onboarding@resend.dev>',
-          to: ['nhlatshwayo@untangledits.co.za'], 
-          subject: `New Quote Request: ${quote.reference} - ${quote.customer_name}`,
-          html: emailHtml
+          from: 'Untangled IT Solutions <onboarding@resend.dev>',
+          to: [quote.email], // Sends to the client
+          subject: `We received your quote request (${quote.reference})`,
+          html: clientEmailHtml
         })
       });
-      
-      if (!emailRes.ok) {
-        console.error('Resend API Error:', await emailRes.text());
-      }
+
     } catch (emailError) {
       console.error('Failed to send email:', emailError);
     }
-    // --- END EMAIL CODE ---
+    // --- END DUAL EMAIL SYSTEM ---
 
     sendJson(response, 201, { success: true, reference: quote.reference })
     return
