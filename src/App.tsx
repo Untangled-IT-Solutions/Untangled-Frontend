@@ -1,6 +1,8 @@
-// src/App.tsx (Full updated file)
+// src/App.tsx
 import { useState, useEffect } from 'react'
 import { wakeUpServer } from './lib/api'
+import Header from './components/header'
+import SiteFooter from './components/SiteFooter'
 import Home from './pages/home'
 import QuotePage from './pages/quote'
 import ProductsPage from './pages/products'
@@ -11,19 +13,20 @@ import SolutionsPage from './pages/solutions'
 import HelpMeChoosePage from './pages/help-me-choose'
 import CartPage from './pages/cart'
 import CheckoutPage from './pages/checkout'
-import TrackQuotePage from './pages/track-quote' // <--- IMPORT THIS
+import TrackQuotePage from './pages/track-quote'
+import TermsPage from './pages/terms'
+import RefundPolicyPage from './pages/refund'
 import { StoreProvider } from './lib/store-context'
 import './App.css'
 
-// UPDATE: Add 'track-quote' to this type
-export type Page = 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote'
+export type Page = 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund'
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [showQuote, setShowQuote] = useState(false)
 
   const navigateTo = (page: string) => {
-    const allowedPages: Page[] = ['home', 'products', 'refurbished', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote']
+    const allowedPages: Page[] = ['home', 'products', 'refurbished', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote', 'terms', 'refund']
     if (!allowedPages.includes(page as Page)) return
     const nextPage = page as Page
     setCurrentPage(nextPage)
@@ -70,11 +73,15 @@ function AppContent() {
           <QuotePage 
             onClose={closeQuote} 
             onNavigateToStore={navigateToStore} 
-            onNavigate={navigateTo} // <--- PASS THIS PROP
+            onNavigate={navigateTo}
           />
         );
-      case 'track-quote': // <--- ADD THIS CASE
+      case 'track-quote':
         return <TrackQuotePage />
+      case 'terms':
+        return <TermsPage />
+      case 'refund':
+        return <RefundPolicyPage />
       default:
         return <Home />
     }
@@ -91,6 +98,8 @@ function AppContent() {
         {renderPage()}
       </div>
 
+      <SiteFooter onNavigate={navigateTo} />
+
       {/* Quote Modal/Overlay */}
       {showQuote && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
@@ -99,7 +108,7 @@ function AppContent() {
               <QuotePage 
                 onClose={closeQuote}
                 onNavigateToStore={navigateToStore}
-                onNavigate={navigateTo} // <--- PASS THIS PROP HERE TOO
+                onNavigate={navigateTo}
               />
             </div>
           </div>

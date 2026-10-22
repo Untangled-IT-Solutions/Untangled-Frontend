@@ -66,7 +66,7 @@ const socialLinks = [
   },
 ]
 
-export default function SiteFooter() {
+export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const { theme } = useTheme()
   const light = theme === 'light'
 
@@ -136,7 +136,18 @@ export default function SiteFooter() {
           <div className={`mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-[10px] sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8 ${light ? 'text-[#6B7280]' : 'text-white/45'}`}>
             <p>© {new Date().getFullYear()} Untangled IT Solutions (Pty) Ltd. All rights reserved. · Reg No. 2016/086055/07 · VAT No. 4110280148</p>
             <div className="flex gap-5">
-              <a href="#" className="hover:text-[#839705]">Terms &amp; Conditions</a>
+              <a 
+                href="#terms" 
+                onClick={(e) => { 
+                  if (onNavigate) { 
+                    e.preventDefault(); 
+                    onNavigate('terms'); 
+                  } 
+                }} 
+                className="hover:text-[#839705]"
+              >
+                Terms &amp; Conditions
+              </a>
               <a href="#" className="hover:text-[#839705]">Privacy Policy</a>
             </div>
           </div>
