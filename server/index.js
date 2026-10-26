@@ -190,6 +190,7 @@ async function handleApi(request, response, url) {
       });
 
       // 2. EMAIL TO CLIENT (Auto-Responder with Reference)
+      // TEST MODE: routed to all staff emails for workflow verification
       const clientEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #83B70F; padding: 20px; text-align: center;">
@@ -222,8 +223,8 @@ async function handleApi(request, response, url) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
           from: 'Untangled IT Solutions <onboarding@resend.dev>',
-          to: [quote.email], // Sends to the client
-          subject: `We received your quote request (${quote.reference})`,
+          to: ['nhlatshwayo@untangledits.co.za', 'bmoremi@untangledits.co.za', 'gwesi@untangledits.co.za', 'uhadebe@untangledits.co.za'],
+          subject: `TEST CLIENT - We received your quote request (${quote.reference})`,
           html: clientEmailHtml
         })
       });
