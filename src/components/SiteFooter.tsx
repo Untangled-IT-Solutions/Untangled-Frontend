@@ -148,7 +148,18 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
               >
                 Terms &amp; Conditions
               </a>
-              <a href="#" className="hover:text-[#839705]">Privacy Policy</a>
+              <a 
+                href="#refund" 
+                onClick={(e) => { 
+                  if (onNavigate) { 
+                    e.preventDefault(); 
+                    onNavigate('refund'); 
+                  } 
+                }} 
+                className="hover:text-[#839705]"
+              >
+                Refund &amp; Cancellation Policy
+              </a>
             </div>
           </div>
         </div>
