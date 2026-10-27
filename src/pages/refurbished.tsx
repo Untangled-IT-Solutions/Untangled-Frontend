@@ -109,7 +109,7 @@ export default function RefurbishedPage({ onNavigate }: RefurbishedPageProps) {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-medium text-[#839705]">{product.brand}</span>
+                  <span className="text-xs font-medium text-[b4d334]">{product.brand}</span>
                   <h3 className="mt-1 text-sm font-semibold line-clamp-2 text-foreground">
                     {product.name}
                   </h3>
@@ -202,9 +202,9 @@ export default function RefurbishedPage({ onNavigate }: RefurbishedPageProps) {
                   }}
                   className={`mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                     isQuoteOnly
-                      ? "bg-[#839705] text-white hover:bg-[#98ab06]"
+                      ? "bg-[b4d334] text-white hover:bg-[#98ab06]"
                       : theme === "light"
-                        ? "bg-[#839705] text-white hover:bg-[#98ab06]"
+                        ? "bg-[b4d334] text-white hover:bg-[#98ab06]"
                         : "bg-white text-black hover:bg-gray-200"
                   }`}
                 >
@@ -217,7 +217,7 @@ export default function RefurbishedPage({ onNavigate }: RefurbishedPageProps) {
                 <div className="mt-3 pt-3 border-t border-border">
                   <button
                     onClick={() => handleQuoteClick(product.id, product.name)}
-                    className="text-sm text-[#839705] hover:underline flex items-center gap-2 w-full text-left"
+                    className="text-sm text-[b4d334] hover:underline flex items-center gap-2 w-full text-left"
                   >
                     <FileText className="h-4 w-4" />
                     {inQuote ? "In Quote List ✓" : "Need several? Request Quote"}

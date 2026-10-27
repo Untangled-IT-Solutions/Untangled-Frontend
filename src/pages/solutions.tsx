@@ -127,7 +127,7 @@ export default function SolutionsPage() {
           Thank you. One of our consultants will be in touch within 24 hours to discuss your requirements.
         </p>
         <button
-          className="mt-6 rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+          className="mt-6 rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           onClick={() => { 
             setDone(false); 
             setSelected([]); 
@@ -178,13 +178,13 @@ export default function SolutionsPage() {
                   onClick={() => toggle(s.id)}
                   className={`rounded-2xl border p-4 text-left transition-colors ${
                     active 
-                      ? "border-[#839705] bg-[#839705]/10" 
+                      ? "border-[b4d334] bg-[b4d334]/10" 
                       : theme === "light"
                         ? "border-[#D7E2C8] bg-white hover:bg-[#EEF3E7]"
                         : "border-[#3A4331] bg-[#1A1A1A] hover:bg-[#2A2E24]"
                   }`}
                 >
-                  <span className={`block text-sm font-bold ${active ? "text-[#839705]" : "text-foreground"}`}>
+                  <span className={`block text-sm font-bold ${active ? "text-[b4d334]" : "text-foreground"}`}>
                     {s.name}
                   </span>
                   <span className="mt-1 block text-xs text-muted-foreground">{s.description}</span>
@@ -208,11 +208,11 @@ export default function SolutionsPage() {
             </button>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#839705] bg-[#839705]/5 p-4">
+          <div className="mt-4 rounded-2xl border border-[b4d334] bg-[b4d334]/5 p-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted-foreground">Selected solutions:</span>
               {selectedServices.map((s) => (
-                <span key={s?.id} className="rounded-full bg-[#839705]/20 px-3 py-1 text-sm font-semibold text-[#839705]">
+                <span key={s?.id} className="rounded-full bg-[b4d334]/20 px-3 py-1 text-sm font-semibold text-[b4d334]">
                   {s?.name}
                 </span>
               ))}
@@ -237,7 +237,7 @@ export default function SolutionsPage() {
             {/* Contact Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <span className="w-1 h-6 bg-[#839705] rounded-full"></span>
+                <span className="w-1 h-6 bg-[b4d334] rounded-full"></span>
                 Contact Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -288,7 +288,7 @@ export default function SolutionsPage() {
             {/* Address Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Building className="h-4 w-4 text-[#839705]" />
+                <Building className="h-4 w-4 text-[b4d334]" />
                 Address Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -327,7 +327,7 @@ export default function SolutionsPage() {
             {/* Project Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Network className="h-4 w-4 text-[#839705]" />
+                <Network className="h-4 w-4 text-[b4d334]" />
                 Project Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -388,7 +388,7 @@ export default function SolutionsPage() {
             {/* Current Infrastructure Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Server className="h-4 w-4 text-[#839705]" />
+                <Server className="h-4 w-4 text-[b4d334]" />
                 Current Infrastructure
               </h3>
               <div className="mt-3 grid gap-4">
@@ -419,7 +419,7 @@ export default function SolutionsPage() {
             {isLicensingSelected && (
               <div className="mb-6">
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <ShoppingCart className="h-4 w-4 text-[#839705]" />
+                  <ShoppingCart className="h-4 w-4 text-[b4d334]" />
                   Licensing & Software Requirements
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">Please provide details about your software licensing needs.</p>
@@ -520,7 +520,7 @@ export default function SolutionsPage() {
             {/* Compliance & Requirements Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Shield className="h-4 w-4 text-[#839705]" />
+                <Shield className="h-4 w-4 text-[b4d334]" />
                 Compliance & Requirements
               </h3>
               <div className="mt-3">
@@ -538,7 +538,7 @@ export default function SolutionsPage() {
             {/* Business Goals Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Users className="h-4 w-4 text-[#839705]" />
+                <Users className="h-4 w-4 text-[b4d334]" />
                 Business Goals
               </h3>
               <div className="mt-3">
@@ -557,7 +557,7 @@ export default function SolutionsPage() {
             {/* Additional Information */}
             <div className="mb-4">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#839705]" />
+                <FileText className="h-4 w-4 text-[b4d334]" />
                 Additional Information
               </h3>
               <div className="mt-3">
@@ -577,7 +577,7 @@ export default function SolutionsPage() {
               disabled={selected.length === 0}
               className={`mt-5 w-full rounded-xl px-6 py-3 text-sm font-semibold text-white transition-colors inline-flex items-center justify-center gap-2 ${
                 selected.length > 0 
-                  ? "bg-[#839705] hover:bg-[#98ab06]" 
+                  ? "bg-[b4d334] hover:bg-[#98ab06]" 
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               }`}
             >

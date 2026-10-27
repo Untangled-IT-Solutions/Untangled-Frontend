@@ -17,11 +17,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import FeaturedProducts from '../components/FeaturedProducts';
-import SiteFooter from '../components/SiteFooter';
-
-// Import BOTH light and dark background images from your assets folder
-import showcaseBgLight from '../assets/background.png';
-import showcaseBgDark from '../assets/dark-background.png';
 
 const PARTNERS = [
   { name: "Dell", logo: "/partners/dell.svg" },
@@ -66,8 +61,8 @@ const orbitServices = [Headset, Laptop, Cloud, Network, ShieldCheck, LifeBuoy];
 function ServiceOrbitCompact({ theme }: { theme: "light" | "dark" }) {
   return (
     <div className="relative size-[220px] lg:size-[310px] xl:size-[330px]" aria-hidden="true">
-      <div className="absolute inset-[7%] rounded-full border border-dashed border-[#C9E265]/75 animate-spin-slow" />
-      <div className="absolute inset-[24%] rounded-full border border-dashed border-white/35 animate-spin-slow [animation-direction:reverse]" />
+      <div className={`absolute inset-[7%] rounded-full border border-dashed animate-spin-slow ${theme === "light" ? "border-black/20" : "border-[#C9E265]/75"}`} />
+      <div className={`absolute inset-[24%] rounded-full border border-dashed animate-spin-slow [animation-direction:reverse] ${theme === "light" ? "border-black/10" : "border-white/35"}`} />
       <div className="absolute inset-0 animate-orbit">
         {orbitServices.map((Icon, index) => {
           const angle = (index / orbitServices.length) * Math.PI * 2 - Math.PI / 2;
@@ -81,7 +76,7 @@ function ServiceOrbitCompact({ theme }: { theme: "light" | "dark" }) {
               style={{ left: `${left}%`, top: `${top}%` }}
             >
               <div className="animate-orbit-counter">
-                <span className="grid size-8 place-items-center rounded-lg border border-white/25 bg-white/95 text-[#839705] shadow-lg backdrop-blur-sm lg:size-10">
+                <span className={`grid size-8 place-items-center rounded-lg border shadow-lg backdrop-blur-sm lg:size-10 ${theme === "light" ? "border-black/10 bg-white text-[#111111]" : "border-white/25 bg-white/95 text-[#b4d334]"}`}>
                   <Icon className="size-4 lg:size-5" />
                 </span>
               </div>
@@ -90,7 +85,7 @@ function ServiceOrbitCompact({ theme }: { theme: "light" | "dark" }) {
         })}
       </div>
       <div className={`absolute left-1/2 top-1/2 grid size-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border shadow-[0_0_35px_rgba(201,226,101,0.32)] animate-float-soft lg:size-28 ${
-        theme === "light" ? "border-white/40 bg-white/95" : "border-white/20 bg-[#11191D]/95"
+        theme === "light" ? "border-black/10 bg-white/95" : "border-white/20 bg-[#11191D]/95"
       }`}>
         <img
           src={theme === "light" ? "/light-logo.svg" : "/dark-logo.svg"}
@@ -118,43 +113,35 @@ export default function Home() {
     <div className={`flex min-h-screen flex-col ${theme === "light" ? "bg-white" : "bg-black"}`}>
       <main>
         
-        {/* Compact landing hero */}
-        <section className="relative isolate flex min-h-[540px] items-center overflow-hidden md:min-h-[500px] lg:min-h-[500px]">
-          <div className="absolute inset-0 -z-10" aria-hidden="true">
-            <img
-              src={theme === "dark" ? showcaseBgDark : showcaseBgLight}
-              alt="ICT Showcase"
-              className="h-full w-full object-cover object-center animate-slow-pan"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F04]/90 via-[#0B0F04]/50 to-[#839705]/5" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 to-transparent" />
-            <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-12 bg-white/15 blur-3xl animate-sheen" />
-          </div>
-
+        {/* Dynamic hero section */}
+        <section className={`relative isolate flex min-h-[540px] items-center overflow-hidden md:min-h-[500px] lg:min-h-[500px] ${
+          theme === "light" ? "bg-[#d1de39]" : "bg-[#0B0F04]"
+        }`}>
           <div className="relative w-full pb-9 pt-24 sm:pb-10 sm:pt-28 md:pt-24 lg:pb-9 lg:pt-24">
             <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-5 px-4 sm:px-6 md:grid-cols-[1.03fr_0.97fr] md:gap-6 lg:gap-8 lg:px-2 xl:px-8">
               
-              {/* Left Content - FIXED text sizes and spacing for mobile */}
+              {/* Left Content */}
               <div className={`pt-0 text-left transition-all duration-1000 ${
                 isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}>
                 
-                <h1 className={`max-w-2xl text-left text-3xl font-extrabold uppercase leading-[1.04] tracking-[-0.025em] drop-shadow-[0_2px_20px_rgba(0,0,0,0.35)] sm:text-4xl lg:text-[44px] xl:text-[48px] ${
-                  theme === "light" ? "text-white" : "text-[#F9FAFB]"
+                <h1 className={`max-w-2xl text-left text-3xl font-extrabold uppercase leading-[1.04] tracking-[-0.025em] sm:text-4xl lg:text-[44px] xl:text-[48px] ${
+                  theme === "light" ? "text-[#111111]" : "text-white"
                 }`}>
                   <span className="block">Smart IT solutions</span>
-                  <span className="mt-1 block sm:whitespace-nowrap">for a <span className="text-[#C9E265]">smarter future</span></span>
+                  <span className={`mt-1 block sm:whitespace-nowrap ${theme === "light" ? "text-white" : "text-[#C9E265]"}`}>for a smarter future</span>
                 </h1>
                 
-                <p className={`mt-4 max-w-xl text-left text-xs font-medium leading-relaxed opacity-85 sm:text-sm lg:text-base ${
-                  theme === "light" ? "text-white/80" : "text-[#9CA3AF]"
+                <p className={`mt-4 max-w-xl text-left text-xs font-medium leading-relaxed sm:text-sm lg:text-base ${
+                  theme === "light" ? "text-[#333333]" : "text-white/80"
                 }`}>
                   We help businesses stay connected, secure and productive with reliable IT support,
                   hardware, licensing and cloud solutions.
                 </p>
                 
-                {/* FIXED: Better wrapping on mobile */}
-                <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold tracking-[0.01em] text-white sm:text-[13px] lg:text-[15px]">
+                <ul className={`mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold tracking-[0.01em] sm:text-[13px] lg:text-[15px] ${
+                  theme === "light" ? "text-[#111111]" : "text-white"
+                }`}>
                   {["IT Support", "Hardware", "Microsoft 365", "Network Solutions"].map((item) => (
                     <li key={item} className="flex items-center gap-1.5 whitespace-nowrap sm:gap-2">
                       <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 lg:h-[18px] lg:w-[18px]" /> {item}
@@ -162,24 +149,27 @@ export default function Home() {
                   ))}
                 </ul>
                 
-                {/* FIXED: Buttons stack on very small screens */}
                 <div className="mt-6 flex flex-wrap justify-start gap-2 sm:gap-3">
                   <a
                     href="#services"
-                    className="rounded-xl bg-[#839705] px-4 py-2.5 text-xs font-semibold text-white shadow-[0_10px_40px_rgba(131,151,5,0.45)] transition-transform hover:-translate-y-0.5 hover:bg-[#98ab06] sm:px-6 sm:py-3 sm:text-sm lg:px-7 lg:py-3.5 lg:text-base"
+                    className={`rounded-xl px-4 py-2.5 text-xs font-semibold shadow-lg transition-transform hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-sm lg:px-7 lg:py-3.5 lg:text-base ${
+                      theme === "light" ? "bg-[#111111] text-white hover:bg-black" : "bg-[#b4d334] text-white hover:bg-[#98ab06]"
+                    }`}
                   >
                     Our services <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 inline" />
                   </a>
                   <a
                     href="#products"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm lg:px-7 lg:py-3.5 lg:text-base"
+                    className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-xs font-semibold transition-colors sm:gap-2 sm:px-6 sm:py-3 sm:text-sm lg:px-7 lg:py-3.5 lg:text-base ${
+                      theme === "light" ? "border-[#111111] bg-transparent text-[#111111] hover:bg-black/10" : "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                    }`}
                   >
                     <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" /> View products
                   </a>
                 </div>
               </div>
 
-              {/* Restored compact animated service orbit on the right. */}
+              {/* Orbit animation */}
               <div className={`hidden justify-center transition-all duration-1000 delay-150 md:flex lg:justify-end ${
                 isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}>
@@ -189,40 +179,31 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Trust and service promises share one compact horizontal strip. */}
+        {/* Trust and service promises - FORCED BLACK IN ALL MODES */}
         <div className="relative z-10 mx-auto -mt-8 max-w-7xl px-3 sm:-mt-9 sm:px-6 lg:px-8">
-          <div className={`grid grid-cols-2 divide-x divide-y rounded-xl border shadow-[0_8px_30px_rgb(0,0,0,0.08)] sm:grid-cols-[1.25fr_1fr_1fr_1fr] sm:divide-y-0 ${
-            theme === "light"
-              ? "divide-[#D7E2C8] bg-white border-[#D7E2C8]"
-              : "divide-[#3A4331] bg-[#1A1A1A] border-[#3A4331]"
-          }`}>
+          <div className="grid grid-cols-2 divide-x divide-y divide-white/10 rounded-xl border border-white/10 bg-[#111111] shadow-[0_8px_30px_rgb(0,0,0,0.08)] sm:grid-cols-[1.25fr_1fr_1fr_1fr] sm:divide-y-0">
+            
             <div className="col-span-2 flex min-w-0 items-center gap-2.5 px-4 py-3 sm:col-span-1 sm:px-5 lg:py-3.5">
-              <ShieldCheck className="size-6 shrink-0 text-[#839705]" />
+              <ShieldCheck className="size-6 shrink-0 text-[#b4d334]" />
               <div className="min-w-0">
-                <p className={`text-xs font-extrabold uppercase leading-tight tracking-[0.015em] sm:text-sm ${
-                  theme === "light" ? "text-[#111111]" : "text-[#F9FAFB]"
-                }`}>Trusted IT partner</p>
-                <p className={`mt-0.5 text-[9px] leading-tight sm:text-[9px] lg:text-[10px] ${
-                  theme === "light" ? "text-[#6B7280]" : "text-[#9CA3AF]"
-                }`}>Supporting organisations across South Africa.</p>
+                <p className="text-xs font-extrabold uppercase leading-tight tracking-[0.015em] text-white sm:text-sm">Trusted IT partner</p>
+                <p className="mt-0.5 text-[9px] leading-tight text-white/60 sm:text-[9px] lg:text-[10px]">Supporting organisations across South Africa.</p>
               </div>
             </div>
+
             {pillars.map(({ icon: Icon, title, sub }) => (
               <div key={title} className="flex min-w-0 items-center gap-2 px-3 py-3 sm:gap-2.5 sm:px-5 lg:py-3.5">
-                <Icon className="size-5 shrink-0 text-[#839705] sm:size-6" />
-                <p className={`truncate text-xs font-bold uppercase leading-tight tracking-[0.015em] sm:text-sm ${
-                  theme === "light" ? "text-[#111111]" : "text-[#F9FAFB]"
-                }`}>
-                  {title}<span className={`ml-1 font-medium opacity-70 ${
-                    theme === "light" ? "text-[#6B7280]" : "text-[#9CA3AF]"
-                  }`}>{sub}</span>
+                <Icon className="size-5 shrink-0 text-[#b4d334] sm:size-6" />
+                <p className="truncate text-xs font-bold uppercase leading-tight tracking-[0.015em] text-white sm:text-sm">
+                  {title}<span className="ml-1 font-medium text-white/60">{sub}</span>
                 </p>
               </div>
             ))}
+            
           </div>
         </div>
 
-        {/* Compact services + featured products showcase */}
+        {/* Compact services + featured products */}
         <div
           id="solutions-showcase"
           className={`mt-4 sm:mt-6 xl:grid xl:grid-cols-2 xl:items-stretch ${
@@ -238,11 +219,11 @@ export default function Home() {
             <div className="mx-auto max-w-3xl px-3 sm:px-6 xl:px-5 2xl:px-8">
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between xl:mb-3">
                 <div className="max-w-xl">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#839705]">What we do</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#b4d334]">What we do</span>
                   <h2 className={`mt-1 text-xl font-extrabold uppercase leading-[1.05] tracking-tight sm:text-2xl xl:text-xl ${
                     theme === "light" ? "text-[#111111]" : "text-[#F9FAFB]"
                   }`}>
-                    Complete IT solutions <span className="text-[#839705]">for your business</span>
+                    Complete IT solutions <span className="text-[#b4d334]">for your business</span>
                   </h2>
                   <p className={`mt-2 max-w-lg text-[11px] leading-relaxed sm:text-xs ${
                     theme === "light" ? "text-[#6B7280]" : "text-[#9CA3AF]"
@@ -252,7 +233,7 @@ export default function Home() {
                 </div>
                 <a
                   href="#solutions"
-                  className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-[#839705] px-3 py-2 text-[10px] font-bold uppercase text-[#839705] transition hover:bg-[#839705] hover:text-white sm:self-auto"
+                  className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-[#b4d334] px-3 py-2 text-[10px] font-bold uppercase text-[#b4d334] transition hover:bg-[#b4d334] hover:text-white sm:self-auto"
                 >
                   See all solutions <ArrowRight className="size-3" />
                 </a>
@@ -268,7 +249,7 @@ export default function Home() {
                         : "border-[#3A4331] bg-[#1A1A1A]"
                     }`}
                   >
-                    <div className="grid size-8 place-items-center rounded-lg bg-[#839705] text-white xl:size-7">
+                    <div className="grid size-8 place-items-center rounded-lg bg-[#b4d334] text-white xl:size-7">
                       <Icon className="size-4 xl:size-3.5" />
                     </div>
                     <h3 className={`mt-2.5 text-xs font-extrabold leading-tight xl:mt-2 xl:text-[11px] ${
@@ -286,10 +267,10 @@ export default function Home() {
           <FeaturedProducts />
         </div>
 
-        {/* ============================================================
-            STATS SECTION - Fixed mobile grid
-            ============================================================ */}
-        <section className="bg-[#B9D719] px-3 py-4 text-[#111711] sm:px-6 lg:py-3.5">
+        {/* STATS SECTION */}
+        <section className={`px-3 py-4 sm:px-6 lg:py-3.5 ${
+          theme === "light" ? "bg-[#d1de39] text-[#111711]" : "bg-[#b4d334] text-[#111711]"
+        }`}>
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-black/15">
             {stats.map(({ icon: Icon, value, label }) => (
               <div key={label} className="flex items-center justify-center gap-2.5 px-2 text-left">
@@ -303,9 +284,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ============================================================
-            OEM PARTNERS SECTION
-            ============================================================ */}
+        {/* OEM PARTNERS SECTION */}
         <section className={`w-full border-y ${
           theme === "light"
             ? "border-[#D7E2C8] bg-white"
@@ -340,7 +319,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <SiteFooter />
     </div>
   );
 }

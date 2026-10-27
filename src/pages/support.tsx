@@ -90,7 +90,7 @@ export default function SupportPage() {
           We've received your request and will respond within 24 hours.
         </p>
         <button
-          className="mt-6 rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+          className="mt-6 rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           onClick={() => { setDone(false); setSelected(null); setFormData({ 
             name: "", company: "", email: "", phone: "", address: "", city: "", postalCode: "",
             deviceMake: "", deviceModel: "", serialNumber: "", biosVersion: "", osVersion: "", problem: "" 
@@ -132,13 +132,13 @@ export default function SupportPage() {
                   onClick={() => setSelected(s.id)}
                   className={`rounded-2xl border p-4 text-left transition-colors ${
                     active 
-                      ? "border-[#839705] bg-[#839705]/10" 
+                      ? "border-[b4d334] bg-[b4d334]/10" 
                       : theme === "light"
                         ? "border-[#D7E2C8] bg-white hover:bg-[#EEF3E7]"
                         : "border-[#3A4331] bg-[#1A1A1A] hover:bg-[#2A2E24]"
                   }`}
                 >
-                  <span className={`block text-sm font-bold ${active ? "text-[#839705]" : "text-foreground"}`}>
+                  <span className={`block text-sm font-bold ${active ? "text-[b4d334]" : "text-foreground"}`}>
                     {s.name}
                   </span>
                   <span className="mt-1 block text-xs text-muted-foreground">{s.description}</span>
@@ -162,10 +162,10 @@ export default function SupportPage() {
             </button>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#839705] bg-[#839705]/5 p-4">
+          <div className="mt-4 rounded-2xl border border-[b4d334] bg-[b4d334]/5 p-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">You selected:</span>
-              <span className="rounded-full bg-[#839705]/20 px-3 py-1 text-sm font-semibold text-[#839705]">
+              <span className="rounded-full bg-[b4d334]/20 px-3 py-1 text-sm font-semibold text-[b4d334]">
                 {selectedService?.name || selected}
               </span>
               <button 
@@ -189,7 +189,7 @@ export default function SupportPage() {
             {/* Contact Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <span className="w-1 h-6 bg-[#839705] rounded-full"></span>
+                <span className="w-1 h-6 bg-[b4d334] rounded-full"></span>
                 Contact Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -239,7 +239,7 @@ export default function SupportPage() {
             {/* Address Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#839705]" />
+                <MapPin className="h-4 w-4 text-[b4d334]" />
                 Address Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -278,7 +278,7 @@ export default function SupportPage() {
             {/* Device Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Laptop className="h-4 w-4 text-[#839705]" />
+                <Laptop className="h-4 w-4 text-[b4d334]" />
                 Device Details
               </h3>
               <p className="text-xs text-muted-foreground mt-1">Please provide as much detail as possible about the device.</p>
@@ -336,7 +336,7 @@ export default function SupportPage() {
             {/* Problem Description */}
             <div className="mb-4">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Info className="h-4 w-4 text-[#839705]" />
+                <Info className="h-4 w-4 text-[b4d334]" />
                 Problem Description
               </h3>
               <div className="mt-3">
@@ -354,7 +354,7 @@ export default function SupportPage() {
 
             <button
               type="submit"
-              className="mt-5 w-full rounded-xl bg-[#839705] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
+              className="mt-5 w-full rounded-xl bg-[b4d334] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
             >
               <Mail className="h-4 w-4" />
               Request Technical Support

@@ -91,7 +91,7 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
             <p className={`mt-2.5 max-w-xs text-[11px] leading-4 ${light ? 'text-[#4B5563]' : 'text-white/60'}`}>
               Reliable software, infrastructure, hardware procurement and IT consulting for organisations across South Africa.
             </p>
-            <p className={`mt-3 text-[10px] font-bold uppercase tracking-[0.16em] ${light ? 'text-[#839705]' : 'text-[#C9E265]'}`}>Follow us</p>
+            <p className={`mt-3 text-[10px] font-bold uppercase tracking-[0.16em] ${light ? 'text-[b4d334]' : 'text-[#C9E265]'}`}>Follow us</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {socialLinks.map(({ label, href, kind, colour }) => (
                 <a
@@ -101,7 +101,7 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
                   rel="noreferrer noopener"
                   aria-label={`Follow Untangled IT Solutions on ${label}`}
                   title={label}
-                  className={`group grid size-9 place-items-center rounded-xl text-white shadow-sm ring-1 transition duration-200 hover:-translate-y-1 hover:scale-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#839705] sm:size-10 ${colour} ${light ? 'ring-black/10' : 'ring-white/15'}`}
+                  className={`group grid size-9 place-items-center rounded-xl text-white shadow-sm ring-1 transition duration-200 hover:-translate-y-1 hover:scale-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[b4d334] sm:size-10 ${colour} ${light ? 'ring-black/10' : 'ring-white/15'}`}
                 >
                   <SocialGlyph kind={kind} />
                 </a>
@@ -114,25 +114,25 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
           <FooterLinks title="Support" links={supportLinks} light={light} />
 
           <div>
-            <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[#839705]' : 'text-[#C9E265]'}`}>Contact details</h2>
+            <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[b4d334]' : 'text-[#C9E265]'}`}>Contact details</h2>
             <ul className={`mt-3 space-y-2 text-[11px] leading-4 ${light ? 'text-[#4B5563]' : 'text-white/65'}`}>
               <li>
-                  <a href="https://www.google.com/maps/search/?api=1&query=9611+Goseame+Street+Ivory+Park+Ext+9+Midrand+1685" target="_blank" rel="noreferrer noopener" className="group flex items-start gap-2 hover:text-[#839705]">
-                  <MapPin className={`mt-0.5 size-4 shrink-0 ${light ? 'text-[#839705]' : 'text-[#B9D719]'}`} />
+                  <a href="https://www.google.com/maps/search/?api=1&query=9611+Goseame+Street+Ivory+Park+Ext+9+Midrand+1685" target="_blank" rel="noreferrer noopener" className="group flex items-start gap-2 hover:text-[b4d334]">
+                  <MapPin className={`mt-0.5 size-4 shrink-0 ${light ? 'text-[b4d334]' : 'text-[#B9D719]'}`} />
                   <span>9611 Goseame Street<br />Ivory Park Ext 9, Midrand, 1685</span>
                   <ArrowUpRight className="mt-0.5 size-3 shrink-0 opacity-50" />
                 </a>
               </li>
-              <li className="flex items-center gap-2"><Phone className={`size-4 shrink-0 ${light ? 'text-[#839705]' : 'text-[#B9D719]'}`} /><a href="tel:+27107462471" className="hover:text-[#839705]">+27 (10) 746-2471</a></li>
+              <li className="flex items-center gap-2"><Phone className={`size-4 shrink-0 ${light ? 'text-[b4d334]' : 'text-[#B9D719]'}`} /><a href="tel:+27107462471" className="hover:text-[b4d334]">+27 (10) 746-2471</a></li>
               <li><a href="https://wa.me/27643276107" target="_blank" rel="noreferrer noopener" className="flex items-center gap-2 hover:text-[#25D366]"><span className="grid size-4 shrink-0 place-items-center rounded-full bg-[#25D366] text-white"><SocialGlyph kind="whatsapp" /></span>064 327 6107</a></li>
-              <li><a href="mailto:sales@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[#839705]"><Mail className="mt-0.5 size-4 shrink-0 text-[#839705]" />sales@untangledits.co.za</a></li>
-              <li><a href="mailto:zmaredi@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[#839705]"><Mail className="mt-0.5 size-4 shrink-0 text-[#839705]" />zmaredi@untangledits.co.za</a></li>
-              <li><a href="https://www.untangledits.co.za" target="_blank" rel="noreferrer noopener" className="flex items-start gap-2 break-all hover:text-[#839705]"><Globe2 className="mt-0.5 size-4 shrink-0 text-[#839705]" />www.untangledits.co.za</a></li>
+              <li><a href="mailto:sales@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />sales@untangledits.co.za</a></li>
+              <li><a href="mailto:zmaredi@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />zmaredi@untangledits.co.za</a></li>
+              <li><a href="https://www.untangledits.co.za" target="_blank" rel="noreferrer noopener" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Globe2 className="mt-0.5 size-4 shrink-0 text-[b4d334]" />www.untangledits.co.za</a></li>
             </ul>
           </div>
         </div>
 
-        <div className={`relative border-t ${light ? 'border-[#839705]/20' : 'border-white/10'}`}>
+        <div className={`relative border-t ${light ? 'border-[b4d334]/20' : 'border-white/10'}`}>
           <div className={`mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-[10px] sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8 ${light ? 'text-[#6B7280]' : 'text-white/45'}`}>
             <p>© {new Date().getFullYear()} Untangled IT Solutions (Pty) Ltd. All rights reserved. · Reg No. 2016/086055/07 · VAT No. 4110280148</p>
             <div className="flex gap-5">
@@ -144,7 +144,7 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
                     onNavigate('terms'); 
                   } 
                 }} 
-                className="hover:text-[#839705]"
+                className="hover:text-[b4d334]"
               >
                 Terms &amp; Conditions
               </a>
@@ -156,7 +156,7 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
                     onNavigate('refund'); 
                   } 
                 }} 
-                className="hover:text-[#839705]"
+                className="hover:text-[b4d334]"
               >
                 Refund Policy
               </a>
@@ -171,11 +171,11 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
 function FooterLinks({ title, links, light }: { title: string; links: string[][]; light: boolean }) {
   return (
     <div>
-      <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[#839705]' : 'text-[#C9E265]'}`}>{title}</h2>
+      <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[b4d334]' : 'text-[#C9E265]'}`}>{title}</h2>
       <ul className={`mt-3 space-y-1.5 text-[11px] ${light ? 'text-[#4B5563]' : 'text-white/60'}`}>
         {links.map(([label, href]) => (
           <li key={label}>
-            <a href={href} className="transition hover:text-[#839705]">{label}</a>
+            <a href={href} className="transition hover:text-[b4d334]">{label}</a>
           </li>
         ))}
       </ul>

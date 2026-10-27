@@ -103,7 +103,7 @@ export default function ProductsPage({ onNavigate }: ProductsPageProps) {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-xs font-medium text-[#839705]">{product.brand}</span>
+                  <span className="text-xs font-medium text-[b4d334]">{product.brand}</span>
                   <h3 className="mt-1 text-base font-semibold text-foreground">
                     {product.name}
                   </h3>
@@ -134,7 +134,7 @@ export default function ProductsPage({ onNavigate }: ProductsPageProps) {
                 {product.specs.length > 3 && (
                   <button
                     onClick={() => toggleSpecs(product.id)}
-                    className="mt-1.5 text-xs text-[#839705] hover:underline flex items-center gap-1"
+                    className="mt-1.5 text-xs text-[b4d334] hover:underline flex items-center gap-1"
                   >
                     {isExpanded ? (
                       <>Show less <ChevronUp className="h-3 w-3" /></>
@@ -168,7 +168,7 @@ export default function ProductsPage({ onNavigate }: ProductsPageProps) {
                 onClick={() => handleQuoteClick(product.id, product.name)}
                 className={`mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                   theme === "light"
-                    ? "bg-[#839705] text-white hover:bg-[#98ab06]"
+                    ? "bg-[b4d334] text-white hover:bg-[#98ab06]"
                     : "bg-white text-black hover:bg-gray-200"
                 }`}
               >

@@ -31,7 +31,7 @@ export default function CartPage({ onNavigate }: CartPageProps) {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
             onClick={handleContinueShopping}
-            className="rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center gap-2"
+            className="rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center gap-2"
           >
             <Package className="h-4 w-4" />
             Continue Shopping
@@ -151,7 +151,7 @@ export default function CartPage({ onNavigate }: CartPageProps) {
                 window.location.href = '/checkout';
               }
             }}
-            className="mt-5 h-12 w-full rounded-xl bg-[#839705] text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
+            className="mt-5 h-12 w-full rounded-xl bg-[b4d334] text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
           >
             Proceed to Checkout
             <ArrowRight className="h-4 w-4" />

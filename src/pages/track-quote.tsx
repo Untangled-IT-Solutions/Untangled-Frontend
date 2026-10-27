@@ -92,7 +92,7 @@ export default function TrackQuotePage() {
         <button
           type="submit"
           disabled={loading}
-          className="h-12 rounded-xl bg-[#839705] px-6 text-sm font-semibold text-white hover:bg-[#98ab06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center justify-center gap-2"
+          className="h-12 rounded-xl bg-[b4d334] px-6 text-sm font-semibold text-white hover:bg-[#98ab06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center justify-center gap-2"
         >
           {loading ? "Checking..." : "Track quote"}
         </button>

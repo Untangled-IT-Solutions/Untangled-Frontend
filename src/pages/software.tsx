@@ -101,7 +101,7 @@ export default function SoftwarePage() {
           Thank you. One of our developers will be in touch within 24 hours to discuss your project.
         </p>
         <button
-          className="mt-6 rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+          className="mt-6 rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           onClick={() => { 
             setDone(false); 
             setSelected([]); 
@@ -149,13 +149,13 @@ export default function SoftwarePage() {
                   onClick={() => toggle(s.id)}
                   className={`rounded-2xl border p-4 text-left transition-colors ${
                     active 
-                      ? "border-[#839705] bg-[#839705]/10" 
+                      ? "border-[b4d334] bg-[b4d334]/10" 
                       : theme === "light"
                         ? "border-[#D7E2C8] bg-white hover:bg-[#EEF3E7]"
                         : "border-[#3A4331] bg-[#1A1A1A] hover:bg-[#2A2E24]"
                   }`}
                 >
-                  <span className={`block text-sm font-bold ${active ? "text-[#839705]" : "text-foreground"}`}>
+                  <span className={`block text-sm font-bold ${active ? "text-[b4d334]" : "text-foreground"}`}>
                     {s.name}
                   </span>
                   <span className="mt-1 block text-xs text-muted-foreground">{s.description}</span>
@@ -179,11 +179,11 @@ export default function SoftwarePage() {
             </button>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-[#839705] bg-[#839705]/5 p-4">
+          <div className="mt-4 rounded-2xl border border-[b4d334] bg-[b4d334]/5 p-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted-foreground">Selected services:</span>
               {selectedServices.map((s, index) => (
-                <span key={s?.id} className="rounded-full bg-[#839705]/20 px-3 py-1 text-sm font-semibold text-[#839705]">
+                <span key={s?.id} className="rounded-full bg-[b4d334]/20 px-3 py-1 text-sm font-semibold text-[b4d334]">
                   {s?.name}
                   {index < selected.length - 1 && ""}
                 </span>
@@ -209,7 +209,7 @@ export default function SoftwarePage() {
             {/* Contact Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <span className="w-1 h-6 bg-[#839705] rounded-full"></span>
+                <span className="w-1 h-6 bg-[b4d334] rounded-full"></span>
                 Contact Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -259,7 +259,7 @@ export default function SoftwarePage() {
             {/* Address Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <span className="w-1 h-6 bg-[#839705] rounded-full"></span>
+                <span className="w-1 h-6 bg-[b4d334] rounded-full"></span>
                 Address Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -298,7 +298,7 @@ export default function SoftwarePage() {
             {/* Project Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Code className="h-4 w-4 text-[#839705]" />
+                <Code className="h-4 w-4 text-[b4d334]" />
                 Project Details
               </h3>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -374,7 +374,7 @@ export default function SoftwarePage() {
             {/* Technical Details Section */}
             <div className="mb-6">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Settings className="h-4 w-4 text-[#839705]" />
+                <Settings className="h-4 w-4 text-[b4d334]" />
                 Technical Details
               </h3>
               <div className="mt-3 grid gap-4">
@@ -414,7 +414,7 @@ export default function SoftwarePage() {
             {/* Project Brief */}
             <div className="mb-4">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <Users className="h-4 w-4 text-[#839705]" />
+                <Users className="h-4 w-4 text-[b4d334]" />
                 Project Brief
               </h3>
               <div className="mt-3">
@@ -432,7 +432,7 @@ export default function SoftwarePage() {
 
             <button
               type="submit"
-              className="mt-5 w-full rounded-xl bg-[#839705] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
+              className="mt-5 w-full rounded-xl bg-[b4d334] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center justify-center gap-2"
             >
               <Mail className="h-4 w-4" />
               Start a Project ({selected.length} service{selected.length > 1 ? 's' : ''} selected)

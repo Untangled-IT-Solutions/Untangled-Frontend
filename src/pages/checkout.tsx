@@ -30,7 +30,7 @@ export default function CheckoutPage() {
         </p>
         <button
           onClick={() => window.location.href = '/'}
-          className="mt-6 rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+          className="mt-6 rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
         >
           Back to the store
         </button>
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
         <h1 className="text-2xl font-extrabold text-foreground">Your cart is empty</h1>
         <button
           onClick={() => window.history.back()}
-          className="mt-5 rounded-xl bg-[#839705] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+          className="mt-5 rounded-xl bg-[b4d334] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
         >
           Shop Products
         </button>
@@ -203,7 +203,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-5 h-12 w-full rounded-xl bg-[#839705] text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+            className="mt-5 h-12 w-full rounded-xl bg-[b4d334] text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           >
             {isSubmitting ? 'Placing Order...' : 'Place Order'}
           </button>

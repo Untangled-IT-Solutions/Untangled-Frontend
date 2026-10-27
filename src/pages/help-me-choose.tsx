@@ -63,7 +63,7 @@ export default function HelpMeChoosePage({ onNavigate, onRequestQuote }: HelpMeC
               <span className="block text-base font-bold text-foreground">{option.label}</span>
               <span className="mt-0.5 block text-sm text-muted-foreground">{option.description}</span>
             </span>
-            <ArrowRight className="h-5 w-5 shrink-0 text-[#839705]" />
+            <ArrowRight className="h-5 w-5 shrink-0 text-[b4d334]" />
           </button>
         ))}
       </div>
@@ -73,7 +73,7 @@ export default function HelpMeChoosePage({ onNavigate, onRequestQuote }: HelpMeC
       }`}>
         <p className="text-muted-foreground">
           Still stuck? Send a quote request describing what you're trying to achieve — quotes are free and we respond within 24 hours.{" "}
-          <button onClick={() => onRequestQuote?.()} className="font-semibold text-[#839705] hover:underline">
+          <button onClick={() => onRequestQuote?.()} className="font-semibold text-[b4d334] hover:underline">
             Open a quote request
           </button>
           .

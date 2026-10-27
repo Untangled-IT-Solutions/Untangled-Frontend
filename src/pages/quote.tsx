@@ -164,7 +164,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
                 onNavigate('track-quote');
               }
             }}
-            className="h-12 rounded-xl bg-[#839705] px-6 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
+            className="h-12 rounded-xl bg-[b4d334] px-6 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors"
           >
             Track this quote
           </button>
@@ -204,7 +204,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <button
           onClick={handleBrowseStore}
-          className="rounded-xl bg-[#839705] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center gap-2"
+          className="rounded-xl bg-[b4d334] px-6 py-3 text-sm font-semibold text-white hover:bg-[#98ab06] transition-colors inline-flex items-center gap-2"
         >
           <ShoppingCart className="h-4 w-4" />
           Go to Products
@@ -459,7 +459,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
             {/* Message/Notes Section - Added for additional client messages */}
             <div>
               <label htmlFor="message" className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Info className="h-4 w-4 text-[#839705]" />
+                <Info className="h-4 w-4 text-[b4d334]" />
                 Anything else we should know?
               </label>
               <p className="text-xs text-muted-foreground mt-0.5">
