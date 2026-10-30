@@ -93,7 +93,7 @@ const HERO_LAPTOPS = [
   },
 ];
 
-export default function Home({ onNavigate }: { onNavigate: (page: 'products' | 'solutions') => void }) {
+export default function Home({ onNavigate }: { onNavigate: (page: 'products' | 'solutions' | 'support') => void }) {
   const { theme } = useTheme();
   const [isInView, setIsInView] = useState(false);
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
@@ -145,7 +145,11 @@ export default function Home({ onNavigate }: { onNavigate: (page: 'products' | '
                 
                 <div className="mt-6 flex flex-wrap justify-start gap-2 sm:gap-3">
                   <a
-                    href="#solutions"
+                    href="/support"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onNavigate('support');
+                    }}
                     className={`rounded-xl px-4 py-2.5 text-xs font-semibold shadow-lg transition-transform hover:-translate-y-0.5 sm:px-5 sm:py-2.5 sm:text-sm lg:px-6 lg:py-3 lg:text-base ${
                       theme === "light" ? "bg-[#111111] text-white hover:bg-black" : "bg-[#b4d334] text-white hover:bg-[#98ab06]"
                     }`}
