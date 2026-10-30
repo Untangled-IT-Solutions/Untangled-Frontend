@@ -10,25 +10,24 @@ import SoftwarePage from './pages/software'
 import SupportPage from './pages/support'
 import SolutionsPage from './pages/solutions'
 import HelpMeChoosePage from './pages/help-me-choose'
-import CartPage from './pages/cart'
-import CheckoutPage from './pages/checkout'
 import TrackQuotePage from './pages/track-quote'
 import TermsPage from './pages/terms'
 import RefundPolicyPage from './pages/refund'
 import { StoreProvider } from './lib/store-context'
 import './App.css'
 
-export type Page = 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund'
+export type Page = 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'quote' | 'track-quote' | 'terms' | 'refund'
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [showQuote, setShowQuote] = useState(false)
 
   const navigateTo = (page: string) => {
-    const allowedPages: Page[] = ['home', 'products', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote', 'terms', 'refund']
+    const allowedPages: Page[] = ['home', 'products', 'software', 'support', 'solutions', 'help-me-choose', 'quote', 'track-quote', 'terms', 'refund']
     if (!allowedPages.includes(page as Page)) return
     const nextPage = page as Page
     setCurrentPage(nextPage)
+    window.scrollTo({ top: 0 })
     if (nextPage !== 'quote') {
       setShowQuote(false)
     }
@@ -40,17 +39,20 @@ function AppContent() {
 
   const closeQuote = () => {
     setShowQuote(false)
+    if (currentPage === 'quote') {
+      navigateTo('products')
+    }
   }
 
   const navigateToStore = () => {
-    setCurrentPage('products')
+    navigateTo('products')
     setShowQuote(false)
   }
 
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <Home />
+        return <Home onNavigate={navigateTo} />
       case 'products':
         return <ProductsPage onNavigate={navigateTo} />
       case 'software':
@@ -61,10 +63,6 @@ function AppContent() {
         return <SolutionsPage />
       case 'help-me-choose':
         return <HelpMeChoosePage onNavigate={navigateTo} onRequestQuote={openQuote} />
-      case 'cart':
-        return <CartPage onNavigate={navigateTo} />
-      case 'checkout':
-        return <CheckoutPage />
       case 'quote':
         return (
           <QuotePage 
@@ -80,7 +78,7 @@ function AppContent() {
       case 'refund':
         return <RefundPolicyPage />
       default:
-        return <Home />
+        return <Home onNavigate={navigateTo} />
     }
   }
 

@@ -19,10 +19,10 @@ const quickLinks = [
 ]
 
 const serviceLinks = [
-  ['IT support', '/services'],
+  ['IT support', '/support'],
   ['Hardware & devices', '/products'],
-  ['Network solutions', '/services'],
-  ['Software solutions', '/services'],
+  ['Network solutions', '/solutions'],
+  ['Software solutions', '/software'],
 ]
 
 const supportLinks = [
@@ -109,9 +109,9 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
             </div>
           </div>
 
-          <FooterLinks title="Quick links" links={quickLinks} light={light} />
-          <FooterLinks title="Our services" links={serviceLinks} light={light} />
-          <FooterLinks title="Support" links={supportLinks} light={light} />
+          <FooterLinks title="Quick links" links={quickLinks} light={light} onNavigate={onNavigate} />
+          <FooterLinks title="Our services" links={serviceLinks} light={light} onNavigate={onNavigate} />
+          <FooterLinks title="Support" links={supportLinks} light={light} onNavigate={onNavigate} />
 
           <div>
             <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[b4d334]' : 'text-[#C9E265]'}`}>Contact details</h2>
@@ -167,14 +167,22 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
   )
 }
 
-function FooterLinks({ title, links, light }: { title: string; links: string[][]; light: boolean }) {
+function FooterLinks({ title, links, light, onNavigate }: { title: string; links: string[][]; light: boolean; onNavigate?: (page: string) => void }) {
   return (
     <div>
       <h2 className={`text-xs font-extrabold uppercase tracking-[0.18em] ${light ? 'text-[b4d334]' : 'text-[#C9E265]'}`}>{title}</h2>
       <ul className={`mt-3 space-y-1.5 text-[11px] ${light ? 'text-[#4B5563]' : 'text-white/60'}`}>
         {links.map(([label, href]) => (
           <li key={label}>
-            <a href={href} className="transition hover:text-[b4d334]">{label}</a>
+            <a href={href} onClick={(event) => {
+              const pages: Record<string, string> = { '/': 'home', '/about': 'home', '/services': 'support', '/support': 'support', '/products': 'products', '/solutions': 'solutions', '/software': 'software' };
+              const page = pages[href];
+              if (page && onNavigate) {
+                event.preventDefault();
+                onNavigate(page);
+                if (href === '/about') requestAnimationFrame(() => document.getElementById('solutions')?.scrollIntoView());
+              }
+            }} className="transition hover:text-[b4d334]">{label}</a>
           </li>
         ))}
       </ul>

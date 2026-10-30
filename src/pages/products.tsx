@@ -4,6 +4,7 @@ import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useStore } from "../lib/store-context";
 import { PRODUCT_CATEGORIES, products, formatPrice, availabilityLabel } from "../lib/store-data";
+import QuoteItemVisual from "../components/QuoteItemVisual";
 
 interface ProductsPageProps {
   onNavigate?: (page: string) => void;
@@ -101,6 +102,7 @@ export default function ProductsPage({ onNavigate }: ProductsPageProps) {
                   : "hover:shadow-[0_8px_30px_rgb(0,0,0,0.3)]"
               }`}
             >
+              <QuoteItemVisual product={product} name={product.name} kind={product.id.startsWith('service-') ? 'service' : 'product'} layout="catalog" />
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-[b4d334]">{product.brand}</span>

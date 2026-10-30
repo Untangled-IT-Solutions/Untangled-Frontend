@@ -4,6 +4,8 @@ export type Availability = "in-stock" | "low-stock" | "on-order";
 export type Product = {
   id: string;
   name: string;
+  image?: string;
+  imageCaption?: string;
   brand: string;
   category: string;
   segment: "products" | "business" | "refurbished";
@@ -54,6 +56,7 @@ export const products: Product[] = [
   // ============================================================
   {
     id: "lat-5440",
+    image: "/products/dell-latitude-5440.webp",
     name: "Dell Latitude 5440",
     brand: "Dell",
     category: "Laptops",
@@ -68,6 +71,8 @@ export const products: Product[] = [
   },
   {
     id: "tp-t14",
+    image: "/products/lenovo-thinkpad-t14.png",
+    imageCaption: "T14 Gen 4 shown. Supplied generation confirmed in your quote.",
     name: "Lenovo ThinkPad T14",
     brand: "Lenovo",
     category: "Laptops",
@@ -82,6 +87,7 @@ export const products: Product[] = [
   },
   {
     id: "lat-7440",
+    image: "/products/dell-latitude-7440.png",
     name: "Dell Latitude 7440",
     brand: "Dell",
     category: "Laptops",
@@ -100,6 +106,7 @@ export const products: Product[] = [
   // ============================================================
   {
     id: "opti-7010-new",
+    image: "/products/dell-optiplex-7010.png",
     name: "Dell OptiPlex 7010",
     brand: "Dell",
     category: "Desktops",
@@ -114,6 +121,8 @@ export const products: Product[] = [
   },
   {
     id: "ts-p3",
+    image: "/products/lenovo-thinkstation-p3.png",
+    imageCaption: "P3 Tower shown. Configuration confirmed in your quote.",
     name: "Lenovo ThinkStation P3",
     brand: "Lenovo",
     category: "Workstations",
@@ -128,6 +137,7 @@ export const products: Product[] = [
   },
   {
     id: "prec-3660-new",
+    image: "/products/dell-precision-3660.png",
     name: "Dell Precision 3660",
     brand: "Dell",
     category: "Workstations",
@@ -146,6 +156,7 @@ export const products: Product[] = [
   // ============================================================
   {
     id: "dell-u2723qe-new",
+    image: "/products/dell-u2723qe.png",
     name: "Dell UltraSharp 27\"",
     brand: "Dell",
     category: "Monitors",
@@ -160,6 +171,7 @@ export const products: Product[] = [
   },
   {
     id: "lenovo-p27h",
+    image: "/products/lenovo-p27h-30.png",
     name: "Lenovo ThinkVision P27h-30",
     brand: "Lenovo",
     category: "Monitors",
@@ -174,6 +186,7 @@ export const products: Product[] = [
   },
   {
     id: "dell-u3423we",
+    image: "/products/dell-u3423we.jpg",
     name: "Dell UltraSharp 34\" Curved",
     brand: "Dell",
     category: "Monitors",
@@ -192,6 +205,7 @@ export const products: Product[] = [
   // ============================================================
   {
     id: "dell-ud22",
+    image: "/products/dell-ud22.jpg",
     name: "Dell Universal Dock UD22",
     brand: "Dell",
     category: "Docks",
@@ -206,6 +220,7 @@ export const products: Product[] = [
   },
   {
     id: "lenovo-dock-gen2",
+    image: "/products/lenovo-usbc-dock-gen2.png",
     name: "Lenovo ThinkPad USB-C Dock Gen 2",
     brand: "Lenovo",
     category: "Docks",
@@ -220,6 +235,8 @@ export const products: Product[] = [
   },
   {
     id: "dell-headset",
+    image: "/products/dell-uc150.jpg",
+    imageCaption: "Dell UC150 shown. Supplied headset model confirmed in your quote.",
     name: "Dell Pro Stereo Headset",
     brand: "Dell",
     category: "Computer Accessories",
@@ -234,6 +251,7 @@ export const products: Product[] = [
   },
   {
     id: "lenovo-combo",
+    image: "/products/lenovo-professional-combo.jpg",
     name: "Lenovo Professional Wireless Combo",
     brand: "Lenovo",
     category: "Input Devices",
@@ -252,6 +270,7 @@ export const products: Product[] = [
   // ============================================================
   {
     id: "service-deployment",
+    image: "/products/service-deployment.jpg",
     name: "Device Setup and Deployment",
     brand: "Untangled IT",
     category: "Other IT Hardware",
@@ -266,6 +285,7 @@ export const products: Product[] = [
   },
   {
     id: "service-lifecycle",
+    image: "/products/service-repair-hands.png",
     name: "Device Lifecycle Optimization",
     brand: "Untangled IT",
     category: "Other IT Hardware",
@@ -280,6 +300,7 @@ export const products: Product[] = [
   },
   {
     id: "service-troubleshooting",
+    image: "/products/service-repair-hands.png",
     name: "Hardware and Software Troubleshooting",
     brand: "Untangled IT",
     category: "Other IT Hardware",

@@ -33,7 +33,7 @@ export default function RefundPolicyPage() {
             <p>If you receive a product that is incorrect, damaged or defective on arrival, please notify us within 7 (seven) days of delivery. We will arrange for collection and, once the issue is confirmed, we will offer a replacement or refund, depending on stock availability and your preference.</p>
 
             <h3 className="font-bold text-foreground mt-4 mb-2">2.3 Non-returnable items</h3>
-            <p>Certain items may not be eligible for return or refund for hygiene, licensing or other reasons. Where applicable, this will be clearly indicated on the product page or during checkout.</p>
+            <p>Certain items may not be eligible for return or refund for hygiene, licensing or other reasons. Where applicable, this will be clearly indicated on the product page or in your quotation.</p>
           </section>
 
           <section>

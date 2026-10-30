@@ -1,13 +1,13 @@
 // src/components/header.tsx
 import { useState } from "react";
-import { Menu, Moon, Sun, X, ShoppingCart, FileText, PackageSearch } from "lucide-react";
+import { Menu, Moon, Sun, X, FileText, PackageSearch } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useStore } from "../lib/store-context";
 
 interface HeaderProps {
-  onNavigate: (page: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund') => void;
+  onNavigate: (page: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'quote' | 'track-quote' | 'terms' | 'refund') => void;
   onRequestQuote: () => void;
-  currentPage: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund';
+  currentPage: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'quote' | 'track-quote' | 'terms' | 'refund';
 }
 
 type Page = HeaderProps["currentPage"];
@@ -81,17 +81,8 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2">
-            <button onClick={toggle} className={`rounded-lg p-2 transition-colors ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
+            <button onClick={toggle} aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'} className={`rounded-lg p-2 transition-colors ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
               {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </button>
-
-            <button onClick={() => handleNavigation('cart')} className={`relative rounded-lg p-2 transition-colors ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
-              <ShoppingCart className="h-5 w-5" />
-              {store.cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full px-1 text-xs font-bold bg-[#b4d334] text-white">
-                  {store.cartCount}
-                </span>
-              )}
             </button>
 
             <button onClick={() => handleNavigation('track-quote')} className={`relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold tracking-[0.01em] transition-colors lg:gap-2 lg:px-3 lg:text-sm ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
@@ -109,7 +100,7 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
               Request a Quote
             </button>
 
-            <button onClick={() => setOpen((o) => !o)} className={`rounded-lg p-2 transition-colors md:hidden ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
+            <button onClick={() => setOpen((o) => !o)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} className={`rounded-lg p-2 transition-colors md:hidden ${isHome && theme === "light" ? "text-black hover:bg-black/10" : "text-white hover:bg-white/10"}`}>
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
@@ -137,11 +128,6 @@ export default function Header({ onNavigate, onRequestQuote, currentPage }: Head
             </nav>
             
             <div className="mt-4 flex flex-col gap-3">
-              <button onClick={() => { handleNavigation('cart'); setOpen(false); }} className={`rounded-lg px-4 py-3 text-center text-base font-semibold transition-colors inline-flex items-center justify-center gap-2 ${isHome && theme === "light" ? "border border-black/20 bg-black/5 text-black hover:bg-black/10" : "border border-[#3A4331] bg-[#111111] text-[#F9FAFB] hover:bg-[#2A2E24]"}`}>
-                <ShoppingCart className="h-4 w-4" />
-                Cart ({store.cartCount} items)
-              </button>
-              
               <button onClick={() => { handleNavigation('track-quote'); setOpen(false); }} className={`rounded-lg px-4 py-3 text-center text-base font-semibold transition-colors inline-flex items-center justify-center gap-2 ${isHome && theme === "light" ? "border border-black/20 bg-black/5 text-black hover:bg-black/10" : "border border-[#3A4331] bg-[#111111] text-[#F9FAFB] hover:bg-[#2A2E24]"}`}>
                 <PackageSearch className="h-4 w-4" />
                 Quote track

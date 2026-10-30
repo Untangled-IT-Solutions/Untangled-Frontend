@@ -30,7 +30,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-bold text-foreground mb-3">3. Use of the Website</h2>
-            <p>You may use this website to browse our products and services and to submit orders. You agree not to use this website for any unlawful purpose or in a way that may compromise the security or proper functioning of the website.</p>
+            <p>You may use this website to browse our products and services and to submit quote requests. You agree not to use this website for any unlawful purpose or in a way that may compromise the security or proper functioning of the website.</p>
           </section>
 
           <section>
@@ -39,13 +39,13 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">5. Orders and Payment</h2>
-            <p>When you place an order through this website, you are making an offer to purchase the selected products or services. We reserve the right to accept or reject any order in our sole discretion. Payment is processed securely via our payment partners, including PayFast. Your order will only be processed once payment has been successfully received.</p>
+            <h2 className="text-xl font-bold text-foreground mb-3">5. Quote Requests</h2>
+            <p>This website accepts quote requests only and does not take online payments. Our team will confirm pricing, stock availability and any payment arrangements in your quotation.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-foreground mb-3">6. Delivery</h2>
-            <p>Delivery options, fees and estimated timeframes will be communicated during checkout. Risk in the products passes to you upon delivery to the address you provide. Please ensure that your delivery details are accurate and complete.</p>
+            <p>Delivery options, fees and estimated timeframes will be communicated in your quotation. Risk in the products passes to you upon delivery to the address you provide. Please ensure that your delivery details are accurate and complete.</p>
           </section>
 
           <section>

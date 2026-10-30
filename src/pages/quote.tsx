@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Mail, Minus, Plus, Trash2, FileText, ShoppingCart, Info } from "lucide-react";
 import { useStore, productById } from "../lib/store-context";
 import { submitQuote } from "../lib/api";
+import QuoteItemVisual from "../components/QuoteItemVisual";
 
 interface QuotePageProps {
   onClose?: () => void;
@@ -27,6 +28,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
   const [details, setDetails] = useState<Details>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof Details, string>>>({});
   const [isSending, setIsSending] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [specNotes, setSpecNotes] = useState<Record<string, string>>({});
   
   // State to hold the submitted reference
@@ -88,11 +90,13 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
   };
 
   const submit = async () => {
+    if (isSending) return;
     if (!validateForm()) {
       return;
     }
     
     setIsSending(true);
+    setSubmitError(null);
     
     try {
       const response = await submitQuote({
@@ -114,7 +118,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
       setSpecNotes({});
     } catch (error) {
       console.error('Error submitting quote:', error);
-      alert('There was an error sending your quote request. Please try again or contact us directly.');
+      setSubmitError(error instanceof Error ? error.message : 'We could not send your quote request. Please try again shortly or contact sales@untangledits.co.za.');
     } finally {
       setIsSending(false);
     }
@@ -266,9 +270,13 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
               {quote.map((item) => {
                 const product = productById(item.id);
                 return (
-                  <article key={item.id} className="rounded-2xl border border-border bg-card p-4">
+                  <article key={item.id} className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
+                      <QuoteItemVisual product={product} name={item.name} kind={item.kind} />
+                      <div className="min-w-0 flex-1">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
+                        {product?.brand && <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{product.brand}</p>}
                         <h3 className="text-sm font-bold leading-snug text-foreground">{item.name}</h3>
                         {product?.specs && (
                           <div className="mt-1.5 flex flex-wrap gap-1">
@@ -329,6 +337,8 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
                         placeholder="Add specifications, condition or timeline (optional)"
                         className="h-10 flex-1 min-w-[200px] rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                       />
+                    </div>
+                      </div>
                     </div>
                   </article>
                 );
@@ -467,6 +477,11 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
               {errors.message && <p className="mt-1 text-xs text-destructive">{errors.message}</p>}
             </div>
 
+            {submitError && (
+              <div role="alert" className="rounded-xl border border-red-700 bg-red-50 p-4 text-sm text-red-900">
+                {submitError}
+              </div>
+            )}
             <div className="flex flex-wrap gap-3 pt-2">
               <button
                 type="button"
@@ -485,7 +500,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
               </button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Sending opens your email client with the quote request pre-filled — just press send.
+              Submit your request here. A quote reference will appear once your request has been saved.
             </p>
           </form>
         </section>

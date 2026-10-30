@@ -93,9 +93,10 @@ const HERO_LAPTOPS = [
   },
 ];
 
-export default function Home() {
+export default function Home({ onNavigate }: { onNavigate: (page: 'products' | 'solutions') => void }) {
   const { theme } = useTheme();
   const [isInView, setIsInView] = useState(false);
+  const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsInView(true), 100);
@@ -144,7 +145,7 @@ export default function Home() {
                 
                 <div className="mt-6 flex flex-wrap justify-start gap-2 sm:gap-3">
                   <a
-                    href="#services"
+                    href="#solutions"
                     className={`rounded-xl px-4 py-2.5 text-xs font-semibold shadow-lg transition-transform hover:-translate-y-0.5 sm:px-5 sm:py-2.5 sm:text-sm lg:px-6 lg:py-3 lg:text-base ${
                       theme === "light" ? "bg-[#111111] text-white hover:bg-black" : "bg-[#b4d334] text-white hover:bg-[#98ab06]"
                     }`}
@@ -152,7 +153,12 @@ export default function Home() {
                     Our services <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 inline" />
                   </a>
                   <a
-                    href="#products"
+                    href="/products"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onNavigate('products');
+                      window.scrollTo({ top: 0 });
+                    }}
                     className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-xs font-semibold transition-colors sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm lg:px-6 lg:py-3 lg:text-base ${
                       theme === "light" ? "border-[#111111] bg-transparent text-[#111111] hover:bg-black/10" : "border-white/30 bg-white/10 text-white hover:bg-white/20"
                     }`}
@@ -204,7 +210,7 @@ export default function Home() {
                 <div className="w-full">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#111111]">Featured products</span>
-                    <a href="#products" className="text-[10px] font-bold text-[#111111] hover:underline flex items-center gap-1">
+                    <a href="/products" onClick={(event) => { event.preventDefault(); onNavigate('products'); window.scrollTo({ top: 0 }); }} className="text-[10px] font-bold text-[#111111] hover:underline flex items-center gap-1">
                       View all <ArrowRight className="size-3" />
                     </a>
                   </div>
@@ -220,7 +226,7 @@ export default function Home() {
                         <h3 className="text-[10px] font-bold text-gray-900 leading-tight mb-1 truncate">{laptop.name}</h3>
                         
                         <ul className="text-[7px] text-gray-500 leading-tight mb-2 flex-grow">
-                          {laptop.specs.slice(0, 3).map((spec, i) => (
+                          {(expandedProduct === laptop.id ? laptop.specs : laptop.specs.slice(0, 3)).map((spec, i) => (
                             <li key={i} className="truncate">• {spec}</li>
                           ))}
                         </ul>
@@ -228,8 +234,8 @@ export default function Home() {
                         <div className="mt-auto">
                           <p className="text-[10px] font-extrabold text-gray-900">{laptop.price}</p>
                           <p className="text-[7px] text-gray-500 mb-1">ex VAT</p>
-                          <button className="w-full bg-[#111] text-white text-[8px] font-bold py-1 rounded flex items-center justify-between px-2">
-                            View details <ArrowRight className="size-2" />
+                          <button type="button" aria-expanded={expandedProduct === laptop.id} onClick={() => setExpandedProduct(expandedProduct === laptop.id ? null : laptop.id)} className="w-full bg-[#111] text-white text-[8px] font-bold py-1 rounded flex items-center justify-between px-2">
+                            {expandedProduct === laptop.id ? 'Hide details' : 'View details'} <ArrowRight className="size-2" />
                           </button>
                         </div>
                       </div>
@@ -268,7 +274,8 @@ export default function Home() {
                 </p>
               </div>
               <a
-                href="#solutions"
+                href="/solutions"
+                onClick={(event) => { event.preventDefault(); onNavigate('solutions'); }}
                 className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-[#b4d334] px-3 py-1.5 text-[9px] font-bold uppercase text-[#b4d334] transition hover:bg-[#b4d334] hover:text-white sm:self-auto"
               >
                 See all solutions <ArrowRight className="size-2.5" />

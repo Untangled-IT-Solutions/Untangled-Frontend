@@ -1,6 +1,18 @@
 @import "tailwindcss";
 /* force rebuild */
 
+.quote-item-visual {
+  background-color: #f8faeb;
+  color: #526315;
+  border: 1px solid #aab948;
+}
+
+.dark .quote-item-visual {
+  background-color: #eef2df;
+  color: #354018;
+  border-color: #657239;
+}
+
 /* Keep the hero palette inside page content, clear of the site header/footer. */
 .internal-page {
   --color-background: #d1de39;

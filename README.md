@@ -1,57 +1,34 @@
-# Untangled IT Solution Shop
+# Untangled IT Solutions
 
-A React and TypeScript storefront with a dependency-free Node API for quote requests, quote tracking and orders.
+A quote-only React and TypeScript site with a Node API for quote requests and tracking.
 
 ## Local development
 
-Install dependencies once:
+Install dependencies with `npm install`, then configure the server settings in `.env` using `.env.example` as a guide.
 
-```bash
-npm install
-```
+Run `npm run dev` to start both the quote API on port 5000 and the Vite frontend. Vite proxies `/api` to the local API, including when Vite selects another frontend port.
 
-Run the API in one terminal:
+For separate processes, use `npm run dev:api` and `npm run dev:web` instead. Do not start a second API on the same port.
 
-```bash
-npm run dev:api
-```
+## Database configuration
 
-Run the frontend in another terminal:
+The backend supports either `DATABASE_URL` for Postgres, or `SUPABASE_URL` with `SUPABASE_SERVICE_ROLE_KEY` (the existing `SUPABASE_SERVICE_KEY` name is also accepted) for Supabase REST. Both options use the existing `quotes` table. Database credentials stay on the server and must never use a `VITE_` prefix.
 
-```bash
-npm run dev
-```
+Optional email notifications require `RESEND_API_KEY`. The current email template uses test-mode recipients; production customer email delivery requires a verified sender and recipient configuration. Saving a quote does not require the email key.
 
-The frontend runs at `http://localhost:5173` and uses `http://localhost:5000/api` while in development.
+## Deployment
 
-## Production
+Run `npm run check` to validate and build the frontend. Deploy `dist` to the frontend host and run `npm start` on the Node API host. The Node server serves API routes only.
 
-Build and run the combined frontend and API:
-
-```bash
-npm run check
-npm start
-```
-
-The Node server serves both `/api/*` and the built frontend. Set these environment variables on the host when needed:
-
-- `PORT`: HTTP port, default `5000`.
-- `CORS_ORIGIN`: comma-separated allowed frontend origins. Same-origin production traffic does not require it.
-- `DATA_FILE`: persistent JSON database location. Default: `server/data/db.json`.
-- `VITE_API_URL`: optional API URL override. Leave unset when the frontend and API share a domain.
-
-Use a host with persistent disk storage for `DATA_FILE`. For horizontally scaled or serverless deployment, replace the JSON persistence layer with a managed database.
+Set `VITE_API_URL` to the deployed API URL ending in `/api` when the frontend and API use different domains, and configure `CORS_ORIGIN` on the API with the allowed frontend origin. When a production reverse proxy routes `/api` to the backend on the same domain, leave `VITE_API_URL` blank. Rebuild the frontend after changing its environment settings.
 
 ## API routes
 
-- `GET /api` — health check.
-- `POST /api/quotes` — create a quote request and return its reference.
-- `GET /api/quotes/track?ref=...&email=...` — track a quote request.
-- `POST /api/orders` — create an order.
+- `GET /api`: API health check; does not verify database connectivity.
+- `POST /api/quotes`: save a quote request and return its reference.
+- `POST /api/quotes/track`: look up a quote using its reference and email address.
 
 ## Checks
 
-```bash
-npm run lint
-npm run build
-```
+- `npm run check`: lint and production build.
+- `node --test server/quote-store.test.js`: database adapter tests using simulated responses, without sending emails or writing real quote records.

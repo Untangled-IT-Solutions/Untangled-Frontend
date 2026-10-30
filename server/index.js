@@ -1,15 +1,9 @@
 import { createServer } from 'node:http'
 import { randomBytes, randomUUID } from 'node:crypto'
-import pg from 'pg'
 import 'dotenv/config'
+import { createQuoteStore } from './quote-store.js'
 
-const { Pool } = pg
-
-// Use the connection string from Render's Environment Variables
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-})
+const quoteStore = createQuoteStore()
 
 const port = Number(process.env.PORT || 5000)
 const allowedOrigins = new Set(
@@ -111,7 +105,7 @@ function createReference(prefix) {
 
 async function handleApi(request, response, url) {
   if (request.method === 'GET' && url.pathname === '/api') {
-    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions API (Postgres)' })
+    sendJson(response, 200, { success: true, service: 'Untangled IT Solutions Quote API' })
     return
   }
 
@@ -137,22 +131,14 @@ async function handleApi(request, response, url) {
     }
 
     try {
-      await pool.query(
-        `INSERT INTO quotes (id, reference, customer_name, company, email, phone, notes, items, status, reply_message, replied_at, created_at) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-        [
-          quote.id, quote.reference, quote.customer_name, quote.company, 
-          quote.email, quote.phone, quote.notes, JSON.stringify(quote.items), 
-          quote.status, quote.reply_message, quote.replied_at, quote.created_at
-        ]
-      )
+      await quoteStore.save(quote)
     } catch (err) {
       console.error('Database error:', err)
-      return sendJson(response, 500, { success: false, message: 'Database error' })
+      return sendJson(response, 503, { success: false, message: 'We could not save your quote request. Your details are still here. Please try again shortly or contact sales@untangledits.co.za.' })
     }
 
     // --- DUAL EMAIL SYSTEM ---
-    try {
+    if (process.env.RESEND_API_KEY) try {
       // 1. EMAIL TO STAFF (Internal Notification)
       const staffEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
@@ -249,11 +235,7 @@ async function handleApi(request, response, url) {
 
     let quote
     try {
-      const res = await pool.query(
-        'SELECT * FROM quotes WHERE reference = $1 AND email = $2 LIMIT 1',
-        [reference, email]
-      )
-      quote = res.rows[0]
+      quote = await quoteStore.find(reference, email)
     } catch (err) {
       console.error('Database error:', err)
       return sendJson(response, 500, { success: false, message: 'Database error' })
@@ -273,50 +255,6 @@ async function handleApi(request, response, url) {
     }
     
     sendJson(response, 200, { success: true, quote: publicQuote })
-    return
-  }
-
-  if (request.method === 'POST' && url.pathname === '/api/orders') {
-    if (!enforceRateLimit(request, response)) return
-    const payload = await readJson(request)
-    const validationError = validateContact(payload)
-    if (validationError) return sendJson(response, 400, { success: false, message: validationError })
-    const address = cleanText(payload.address, 500)
-    const items = cleanItems(payload.items)
-    if (!address) return sendJson(response, 400, { success: false, message: 'Please provide a delivery address' })
-    if (items.length === 0) return sendJson(response, 400, { success: false, message: 'The order must contain at least one item' })
-
-    const order = {
-      id: randomUUID(),
-      order_id: createReference('ORD'),
-      customer_name: cleanText(payload.customerName, 100),
-      company: cleanText(payload.company, 100),
-      email: cleanText(payload.email, 200).toLowerCase(),
-      phone: cleanText(payload.phone, 50),
-      address,
-      notes: cleanText(payload.notes, 2000),
-      items,
-      pricing_status: 'pending_server_quote',
-      status: 'received',
-      created_at: new Date().toISOString(),
-    }
-
-    try {
-      await pool.query(
-        `INSERT INTO orders (id, order_id, customer_name, company, email, phone, address, notes, items, pricing_status, status, created_at) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-        [
-          order.id, order.order_id, order.customer_name, order.company, 
-          order.email, order.phone, order.address, order.notes, 
-          JSON.stringify(order.items), order.pricing_status, order.status, order.created_at
-        ]
-      )
-    } catch (err) {
-      console.error('Database error:', err)
-      return sendJson(response, 500, { success: false, message: 'Database error' })
-    }
-
-    sendJson(response, 201, { success: true, orderId: order.order_id })
     return
   }
 

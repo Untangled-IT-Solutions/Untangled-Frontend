@@ -3,28 +3,19 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { products, type Product } from "./store-data";
 
-export type Line = { id: string; qty: number };
 export type QuoteLine = { id: string; qty: number; kind: "product" | "service"; name: string };
 
 type StoreCtx = {
-  cart: Line[];
   quote: QuoteLine[];
-  addToCart: (id: string, qty?: number) => void;
-  setCartQty: (id: string, qty: number) => void;
-  removeFromCart: (id: string) => void;
-  clearCart: () => void;
   addToQuote: (item: { id: string; name: string; kind: "product" | "service"; qty?: number }) => void;
   setQuoteQty: (id: string, qty: number) => void;
   removeFromQuote: (id: string) => void;
   clearQuote: () => void;
-  cartCount: number;
   quoteCount: number;
-  cartTotal: number;
 };
 
 const Ctx = createContext<StoreCtx | null>(null);
 
-const CART_KEY = "uits.cart";
 const QUOTE_KEY = "uits.quote";
 
 function read<T>(key: string, fallback: T): T {
@@ -38,31 +29,11 @@ function read<T>(key: string, fallback: T): T {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<Line[]>(() => read<Line[]>(CART_KEY, []));
   const [quote, setQuote] = useState<QuoteLine[]>(() => read<QuoteLine[]>(QUOTE_KEY, []));
 
   useEffect(() => {
-    window.localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }, [cart]);
-  
-  useEffect(() => {
     window.localStorage.setItem(QUOTE_KEY, JSON.stringify(quote));
   }, [quote]);
-
-  const addToCart = useCallback((id: string, qty = 1) => {
-    setCart((prev) => {
-      const found = prev.find((l) => l.id === id);
-      if (found) return prev.map((l) => (l.id === id ? { ...l, qty: l.qty + qty } : l));
-      return [...prev, { id, qty }];
-    });
-  }, []);
-
-  const setCartQty = useCallback((id: string, qty: number) => {
-    setCart((prev) => (qty <= 0 ? prev.filter((l) => l.id !== id) : prev.map((l) => (l.id === id ? { ...l, qty } : l))));
-  }, []);
-
-  const removeFromCart = useCallback((id: string) => setCart((p) => p.filter((l) => l.id !== id)), []);
-  const clearCart = useCallback(() => setCart([]), []);
 
   const addToQuote = useCallback(
     (item: { id: string; name: string; kind: "product" | "service"; qty?: number }) => {
@@ -83,26 +54,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const clearQuote = useCallback(() => setQuote([]), []);
 
   const value = useMemo<StoreCtx>(() => {
-    const cartTotal = cart.reduce((sum, l) => {
-      const p = products.find((x) => x.id === l.id);
-      return sum + (p?.price ?? 0) * l.qty;
-    }, 0);
     return {
-      cart,
       quote,
-      addToCart,
-      setCartQty,
-      removeFromCart,
-      clearCart,
       addToQuote,
       setQuoteQty,
       removeFromQuote,
       clearQuote,
-      cartCount: cart.reduce((s, l) => s + l.qty, 0),
       quoteCount: quote.reduce((s, l) => s + l.qty, 0),
-      cartTotal,
     };
-  }, [cart, quote, addToCart, setCartQty, removeFromCart, clearCart, addToQuote, setQuoteQty, removeFromQuote, clearQuote]);
+  }, [quote, addToQuote, setQuoteQty, removeFromQuote, clearQuote]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
