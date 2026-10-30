@@ -54,7 +54,7 @@ const socialLinks = [
   },
   {
     label: 'Facebook',
-    href: 'https://www.facebook.com/untangleditsolutions',
+    href: 'https://www.facebook.com/share/19gTyqcWk7/?mibextid=wwXIfr',
     kind: 'facebook',
     colour: 'bg-[#1877F2]',
   },
