@@ -10,7 +10,7 @@ interface HelpOption {
 
 const HELP_OPTIONS: HelpOption[] = [
   { label: "I want to buy a product", page: "products", description: "Browse our IT products store" },
-  { label: "I need computers for my business", page: "refurbished", description: "View refurbished devices" },
+  { label: "I need computers for my business", page: "products", description: "Browse computers for your business" },
   { label: "I need something developed", page: "software", description: "Software & web development" },
   { label: "I have a computer or IT problem", page: "support", description: "Technical support" },
   { label: "I need a complete IT solution", page: "solutions", description: "IT infrastructure & business solutions" },

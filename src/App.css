@@ -1,2 +1,109 @@
 @import "tailwindcss";
 /* force rebuild */
+
+/* Keep the hero palette inside page content, clear of the site header/footer. */
+.internal-page {
+  --color-background: #d1de39;
+  --color-foreground: #111111;
+  --color-card: #d1de39;
+  --color-card-foreground: #111111;
+  --color-primary: #111111;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #c4d12e;
+  --color-secondary-foreground: #111111;
+  --color-muted: #c4d12e;
+  --color-muted-foreground: #354018;
+  --color-accent: #bdca28;
+  --color-accent-foreground: #111111;
+  --color-border: #8b9526;
+  --color-input: #e3eb8b;
+  --color-ring: #111111;
+  --internal-button-background: #111111;
+  --internal-button-foreground: #ffffff;
+  --internal-button-hover: #303030;
+  --internal-button-disabled: #45483a;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  color-scheme: light;
+}
+
+.dark .internal-page {
+  --color-background: #111111;
+  --color-foreground: #f9fafb;
+  --color-card: #1a1a1a;
+  --color-card-foreground: #f9fafb;
+  --color-primary: #b4d334;
+  --color-primary-foreground: #111111;
+  --color-secondary: #2a2e24;
+  --color-secondary-foreground: #f9fafb;
+  --color-muted: #242820;
+  --color-muted-foreground: #b7bfb0;
+  --color-accent: #2a2e24;
+  --color-accent-foreground: #f9fafb;
+  --color-border: #48513c;
+  --color-input: #1a1a1a;
+  --color-ring: #b4d334;
+  --internal-button-background: #b4d334;
+  --internal-button-foreground: #111111;
+  --internal-button-hover: #c4e34a;
+  --internal-button-disabled: #737c50;
+  color-scheme: dark;
+}
+
+#center.internal-page {
+  flex: 1;
+  min-height: calc(100vh - 5rem);
+}
+
+/* Legacy panels use fixed light/dark colours rather than theme tokens. */
+.internal-page :is(
+  .bg-white,
+  [class~="bg-[#1A1A1A]"],
+  [class~="bg-[#F7F9F4]"]
+) {
+  background-color: var(--color-card);
+}
+
+.internal-page :is(input, textarea, select) {
+  background-color: var(--color-input);
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+}
+
+.internal-page button[class] {
+  background-color: var(--internal-button-background);
+  color: var(--internal-button-foreground);
+  border-color: var(--internal-button-background);
+}
+
+/* Option cards and icon controls also contain their own text colours. */
+.internal-page button * {
+  color: inherit;
+}
+
+.internal-page button:not([class*="rounded"]) {
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.625rem;
+}
+
+.internal-page button:hover:not(:disabled) {
+  background-color: var(--internal-button-hover);
+  color: var(--internal-button-foreground);
+}
+
+.internal-page button:disabled {
+  background-color: var(--internal-button-disabled);
+  color: var(--internal-button-foreground);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.internal-page button[class*="border-[b4d334]"] {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 3px;
+}
+
+.internal-page :focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 3px;
+}

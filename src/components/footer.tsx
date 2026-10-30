@@ -126,7 +126,6 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
               <li className="flex items-center gap-2"><Phone className={`size-4 shrink-0 ${light ? 'text-[b4d334]' : 'text-[#B9D719]'}`} /><a href="tel:+27107462471" className="hover:text-[b4d334]">+27 (10) 746-2471</a></li>
               <li><a href="https://wa.me/27643276107" target="_blank" rel="noreferrer noopener" className="flex items-center gap-2 hover:text-[#25D366]"><span className="grid size-4 shrink-0 place-items-center rounded-full bg-[#25D366] text-white"><SocialGlyph kind="whatsapp" /></span>064 327 6107</a></li>
               <li><a href="mailto:sales@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />sales@untangledits.co.za</a></li>
-              <li><a href="mailto:zmaredi@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />zmaredi@untangledits.co.za</a></li>
               <li><a href="https://www.untangledits.co.za" target="_blank" rel="noreferrer noopener" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Globe2 className="mt-0.5 size-4 shrink-0 text-[b4d334]" />www.untangledits.co.za</a></li>
             </ul>
           </div>

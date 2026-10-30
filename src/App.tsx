@@ -6,7 +6,6 @@ import SiteFooter from './components/SiteFooter'
 import Home from './pages/home'
 import QuotePage from './pages/quote'
 import ProductsPage from './pages/products'
-import RefurbishedPage from './pages/refurbished'
 import SoftwarePage from './pages/software'
 import SupportPage from './pages/support'
 import SolutionsPage from './pages/solutions'
@@ -19,14 +18,14 @@ import RefundPolicyPage from './pages/refund'
 import { StoreProvider } from './lib/store-context'
 import './App.css'
 
-export type Page = 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund'
+export type Page = 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund'
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home')
   const [showQuote, setShowQuote] = useState(false)
 
   const navigateTo = (page: string) => {
-    const allowedPages: Page[] = ['home', 'products', 'refurbished', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote', 'terms', 'refund']
+    const allowedPages: Page[] = ['home', 'products', 'software', 'support', 'solutions', 'help-me-choose', 'cart', 'checkout', 'quote', 'track-quote', 'terms', 'refund']
     if (!allowedPages.includes(page as Page)) return
     const nextPage = page as Page
     setCurrentPage(nextPage)
@@ -54,8 +53,6 @@ function AppContent() {
         return <Home />
       case 'products':
         return <ProductsPage onNavigate={navigateTo} />
-      case 'refurbished':
-        return <RefurbishedPage onNavigate={navigateTo} />
       case 'software':
         return <SoftwarePage />
       case 'support':
@@ -94,7 +91,7 @@ function AppContent() {
         currentPage={currentPage}
         onRequestQuote={openQuote}
       />
-      <div id="center">
+      <div id="center" className={currentPage === 'home' ? undefined : 'internal-page'}>
         {renderPage()}
       </div>
 
@@ -104,7 +101,7 @@ function AppContent() {
       {showQuote && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
           <div className="min-h-screen px-4 py-8">
-            <div className="mx-auto max-w-3xl rounded-2xl bg-background shadow-2xl">
+            <div className="internal-page mx-auto max-w-3xl rounded-2xl bg-background shadow-2xl">
               <QuotePage 
                 onClose={closeQuote}
                 onNavigateToStore={navigateToStore}

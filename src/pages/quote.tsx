@@ -1,6 +1,6 @@
 // src/pages/quote.tsx
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Mail, Minus, Plus, Trash2, FileText, ShoppingCart, Info, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Mail, Minus, Plus, Trash2, FileText, ShoppingCart, Info } from "lucide-react";
 import { useStore, productById } from "../lib/store-context";
 import { submitQuote } from "../lib/api";
 
@@ -198,7 +198,7 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
       <h3 className="text-xl font-bold text-foreground">No items selected</h3>
       <p className="mt-2 text-muted-foreground max-w-md mx-auto">
         You haven't added any items to your quote request yet. 
-        Browse our products or refurbished devices to get started.
+        Browse our products to get started.
       </p>
       
       <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -208,17 +208,6 @@ export default function QuotePage({ onClose, onNavigateToStore, onNavigate, init
         >
           <ShoppingCart className="h-4 w-4" />
           Go to Products
-        </button>
-        <button
-          onClick={() => {
-            if (onNavigateToStore) onNavigateToStore();
-            if (onClose) onClose();
-            window.location.href = '/refurbished';
-          }}
-          className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors inline-flex items-center gap-2"
-        >
-          <RotateCcw className="h-4 w-4" />
-          Go to Refurbished
         </button>
         <button
           onClick={() => {

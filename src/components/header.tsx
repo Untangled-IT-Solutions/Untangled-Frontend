@@ -5,9 +5,9 @@ import { useTheme } from "../context/ThemeContext";
 import { useStore } from "../lib/store-context";
 
 interface HeaderProps {
-  onNavigate: (page: 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund') => void;
+  onNavigate: (page: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund') => void;
   onRequestQuote: () => void;
-  currentPage: 'home' | 'products' | 'refurbished' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund';
+  currentPage: 'home' | 'products' | 'software' | 'support' | 'solutions' | 'help-me-choose' | 'cart' | 'checkout' | 'quote' | 'track-quote' | 'terms' | 'refund';
 }
 
 type Page = HeaderProps["currentPage"];
@@ -15,7 +15,6 @@ type Page = HeaderProps["currentPage"];
 const NAV_ITEMS: Array<{ label: string; page: Page }> = [
   { label: "Home", page: "home" },
   { label: "Products", page: "products" },
-  { label: "Refurbished", page: "refurbished" },
   { label: "Software", page: "software" },
   { label: "Support", page: "support" },
   { label: "Solutions", page: "solutions" },

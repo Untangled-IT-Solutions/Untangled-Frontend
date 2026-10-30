@@ -41,6 +41,9 @@ const offers = [
   { icon: LifeBuoy, title: "Managed support", body: "SLA-backed support for users, endpoints and infrastructure." },
 ];
 
+// Lime and olive shades from the computer illustration.
+const serviceIconColors = ['#b5df20', '#d4f65a', '#9fc916', '#c4ed36', '#799e0b', '#a9d522'];
+
 const pillars = [
   { icon: Headset, title: "Fast", sub: "response" },
   { icon: ShieldCheck, title: "Reliable", sub: "& secure" },
@@ -242,7 +245,7 @@ export default function Home() {
         {/* What we do (Reduced size & compact) */}
         <div
           id="solutions-showcase"
-          className={`mt-4 sm:mt-6 ${
+          className={`${
             theme === "light" ? "bg-[#F7F9F4]" : "bg-[#0F0F0F]"
           }`}
         >
@@ -256,7 +259,7 @@ export default function Home() {
                 <h2 className={`mt-1 text-lg font-extrabold uppercase leading-[1.05] tracking-tight sm:text-xl lg:text-2xl ${
                   theme === "light" ? "text-[#111111]" : "text-[#F9FAFB]"
                 }`}>
-                  Complete IT solutions <span className="text-[#b4d334]">for your business</span>
+                  Complete IT solutions <span className="text-[#799e0b]">for your business</span>
                 </h2>
                 <p className={`mt-1.5 max-w-lg text-[11px] leading-relaxed sm:text-xs ${
                   theme === "light" ? "text-[#6B7280]" : "text-[#9CA3AF]"
@@ -273,7 +276,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-              {offers.map(({ icon: Icon, title, body }) => (
+              {offers.map(({ icon: Icon, title, body }, index) => (
                 <article
                   key={title}
                   className={`min-w-0 rounded-lg border p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
@@ -282,7 +285,10 @@ export default function Home() {
                       : "border-[#3A4331] bg-[#1A1A1A]"
                   }`}
                 >
-                  <div className="grid size-8 place-items-center rounded-md bg-[#b4d334] text-white">
+                  <div
+                    className="grid size-8 place-items-center rounded-md text-[#111711]"
+                    style={{ backgroundColor: serviceIconColors[index] }}
+                  >
                     <Icon className="size-4" />
                   </div>
                   <h3 className={`mt-2 text-xs font-extrabold leading-tight ${

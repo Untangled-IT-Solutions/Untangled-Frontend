@@ -130,7 +130,7 @@ export default function SoftwarePage() {
           Software & Web Development
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          For customers who need something built specifically for their business. Tell us what you need — no shopping cart required.
+          For customers who need something built specifically for their business. Tell us what you need. No shopping cart required.
         </p>
       </header>
 

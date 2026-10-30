@@ -87,7 +87,7 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
 
         <div className="relative mx-auto grid max-w-7xl gap-7 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.35fr_0.8fr_1fr_0.85fr_1.25fr] lg:gap-7 lg:px-8 lg:py-6">
           <div>
-            <img src={light ? '/light-logo.svg' : '/dark-logo.svg'} alt="Untangled IT Solutions" className="h-14 w-auto max-w-full object-contain object-left sm:h-16" />
+            <img src={light ? '/footer-logo-light.svg' : '/footer-logo-dark.svg'} alt="Untangled IT Solutions" className="h-14 w-auto max-w-full object-contain object-left sm:h-16" />
             <p className={`mt-2.5 max-w-xs text-[11px] leading-4 ${light ? 'text-[#4B5563]' : 'text-white/60'}`}>
               Reliable software, infrastructure, hardware procurement and IT consulting for organisations across South Africa.
             </p>
@@ -126,7 +126,6 @@ export default function SiteFooter({ onNavigate }: { onNavigate?: (page: string)
               <li className="flex items-center gap-2"><Phone className={`size-4 shrink-0 ${light ? 'text-[b4d334]' : 'text-[#B9D719]'}`} /><a href="tel:+27107462471" className="hover:text-[b4d334]">+27 (10) 746-2471</a></li>
               <li><a href="https://wa.me/27643276107" target="_blank" rel="noreferrer noopener" className="flex items-center gap-2 hover:text-[#25D366]"><span className="grid size-4 shrink-0 place-items-center rounded-full bg-[#25D366] text-white"><SocialGlyph kind="whatsapp" /></span>064 327 6107</a></li>
               <li><a href="mailto:sales@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />sales@untangledits.co.za</a></li>
-              <li><a href="mailto:zmaredi@untangledits.co.za" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Mail className="mt-0.5 size-4 shrink-0 text-[b4d334]" />zmaredi@untangledits.co.za</a></li>
               <li><a href="https://www.untangledits.co.za" target="_blank" rel="noreferrer noopener" className="flex items-start gap-2 break-all hover:text-[b4d334]"><Globe2 className="mt-0.5 size-4 shrink-0 text-[b4d334]" />www.untangledits.co.za</a></li>
             </ul>
           </div>

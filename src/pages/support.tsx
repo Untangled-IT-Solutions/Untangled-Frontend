@@ -114,7 +114,7 @@ export default function SupportPage() {
           IT Services & Support
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          For customers who need assistance with their existing technology. Three quick steps — no technical jargon needed.
+          For customers who need assistance with their existing technology. Three quick steps. No technical jargon needed.
         </p>
       </header>
 
