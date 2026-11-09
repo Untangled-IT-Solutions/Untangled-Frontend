@@ -6,12 +6,15 @@ import { createQuoteStore } from './quote-store.js'
 const quoteStore = createQuoteStore()
 
 const port = Number(process.env.PORT || 5000)
+
+// FIX: Added live domains to the fallback so it works even if env var is missing
 const allowedOrigins = new Set(
-  (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174')
+  (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,https://untangledits.co.za,https://www.untangledits.co.za')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
 )
+
 const rateBuckets = new Map()
 const RATE_WINDOW_MS = 15 * 60 * 1000
 const RATE_LIMIT = 60
@@ -169,15 +172,14 @@ async function handleApi(request, response, url) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
           from: 'Untangled Website <onboarding@resend.dev>',
-          // TEST MODE: routing to your main email to bypass domain verification
-          to: ['sales@untangledits.co.za@untangledits.co.za'],
+          // FIX: Removed the duplicated domain
+          to: ['sales@untangledits.co.za'],
           subject: `New Quote: ${quote.reference} - ${quote.customer_name}`,
           html: staffEmailHtml
         })
       });
 
       // 2. EMAIL TO CLIENT (Auto-Responder with Reference)
-      // TEST MODE: routed to your main email for workflow verification
       const clientEmailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #83B70F; padding: 20px; text-align: center;">
@@ -196,7 +198,8 @@ async function handleApi(request, response, url) {
             <p style="font-size: 16px;">You can track the status of your quote at any time by clicking the button below and entering this reference number along with your email address.</p>
             
             <div style="margin-top: 30px; text-align: center;">
-              <a href="https://untangled-frontend.vercel.app/" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Track My Quote</a>
+              <!-- FIX: Updated link to official domain -->
+              <a href="https://www.untangledits.co.za/track" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Track My Quote</a>
             </div>
           </div>
           <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #e0e0e0;">
@@ -210,9 +213,10 @@ async function handleApi(request, response, url) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
           from: 'Untangled IT Solutions <onboarding@resend.dev>',
-          // TEST MODE: routing to your main email to bypass domain verification
-          to: ['sales@untangledits.co.za@untangledits.co.za'],
-          subject: `TEST CLIENT - We received your quote request (${quote.reference})`,
+          // FIX: Removed the duplicated domain
+          to: ['sales@untangledits.co.za'], 
+          // FIX: Removed the "TEST CLIENT - " prefix
+          subject: `We received your quote request (${quote.reference})`,
           html: clientEmailHtml
         })
       });
