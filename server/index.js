@@ -170,7 +170,7 @@ async function handleApi(request, response, url) {
         body: JSON.stringify({
           from: 'Untangled Website <onboarding@resend.dev>',
           // TEST MODE: routing to your main email to bypass domain verification
-          to: ['nhlatshwayo@untangledits.co.za'],
+          to: ['sales@untangledits.co.za@untangledits.co.za'],
           subject: `New Quote: ${quote.reference} - ${quote.customer_name}`,
           html: staffEmailHtml
         })
@@ -211,7 +211,7 @@ async function handleApi(request, response, url) {
         body: JSON.stringify({
           from: 'Untangled IT Solutions <onboarding@resend.dev>',
           // TEST MODE: routing to your main email to bypass domain verification
-          to: ['nhlatshwayo@untangledits.co.za'],
+          to: ['sales@untangledits.co.za@untangledits.co.za'],
           subject: `TEST CLIENT - We received your quote request (${quote.reference})`,
           html: clientEmailHtml
         })
