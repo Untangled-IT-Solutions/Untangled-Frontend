@@ -268,7 +268,13 @@ async function handleApi(request, response, url) {
 const server = createServer(async (request, response) => {
   setCorsHeaders(request, response)
   if (request.method === 'OPTIONS') {
-    response.writeHead(204)
+    // FIX: Explicitly send CORS headers for the browser's preflight check
+    response.writeHead(204, {
+      'Access-Control-Allow-Origin': request.headers.origin || '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    })
     response.end()
     return
   }
