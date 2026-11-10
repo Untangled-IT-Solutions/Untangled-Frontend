@@ -7,28 +7,28 @@ const products = [
     price: 'R15 950.00',
     badge: 'Demo unit',
     image: '/products/dell-latitude-5430.webp',
-    specs: ['Intel Core i5 12th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '3-Year Next Business Day Warranty'],
+    specs: ['Intel Core i5 12th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '12 months warranty'],
   },
   {
     name: 'Dell Latitude 5420',
     price: 'R13 950.00',
     badge: 'Demo unit',
     image: '/products/dell-latitude-5420.webp',
-    specs: ['Intel Core i5 11th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '3-Year Next Business Day Warranty'],
+    specs: ['Intel Core i5 11th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '12 months warranty'],
   },
   {
     name: 'Dell Latitude 5440',
     price: 'R18 950.00',
     badge: 'Brand new',
     image: '/products/dell-latitude-5440.webp',
-    specs: ['Intel Core i5 13th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '3-Year Next Business Day Warranty'],
+    specs: ['Intel Core i5 13th Gen', '16GB RAM', '512GB NVMe SSD', '14” FHD Display', 'Windows 11 Pro', '12 months warranty'],
   },
   {
     name: 'Dell 24” Monitor – P2422H',
     price: 'R2 950.00',
     badge: 'Special deal',
     image: '/products/dell-p2422h.webp',
-    specs: ['24” FHD IPS Display', '1920 × 1080 Resolution', 'HDMI, DisplayPort, VGA', 'Height Adjustable', '3-Year Warranty'],
+    specs: ['24” FHD IPS Display', '1920 × 1080 Resolution', 'HDMI, DisplayPort, VGA', 'Height Adjustable', '12 months warranty'],
   },
 ]
 

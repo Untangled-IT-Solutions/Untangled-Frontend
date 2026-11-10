@@ -66,7 +66,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year ProSupport",
+    warranty: "12 months warranty",
     keywords: ["business", "laptop", "dell", "latitude", "windows"],
   },
   {
@@ -82,7 +82,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year on-site",
+    warranty: "12 months warranty",
     keywords: ["business", "laptop", "lenovo", "thinkpad", "tpm"],
   },
   {
@@ -97,7 +97,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year ProSupport Plus",
+    warranty: "12 months warranty",
     keywords: ["business", "premium", "laptop", "dell", "latitude"],
   },
 
@@ -116,7 +116,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year on-site",
+    warranty: "12 months warranty",
     keywords: ["desktop", "business", "dell", "optiplex", "windows"],
   },
   {
@@ -132,7 +132,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year on-site",
+    warranty: "12 months warranty",
     keywords: ["workstation", "professional", "lenovo", "thinkstation", "xeon"],
   },
   {
@@ -143,11 +143,11 @@ export const products: Product[] = [
     category: "Workstations",
     segment: "products",
     shortDescription: "High-performance workstation with Intel Core i9, 64GB RAM, 2TB NVMe SSD, NVIDIA RTX A2000",
-    specs: ["Intel Core i9", "64GB RAM", "2TB NVMe SSD", "NVIDIA RTX A2000", "TPM 2.0 + ProSupport Ready"],
+    specs: ["Intel Core i9", "64GB RAM", "2TB NVMe SSD", "NVIDIA RTX A2000", "TPM 2.0"],
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year ProSupport Plus",
+    warranty: "12 months warranty",
     keywords: ["workstation", "high-performance", "dell", "precision", "rtx"],
   },
 
@@ -166,7 +166,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year exchange",
+    warranty: "12 months warranty",
     keywords: ["monitor", "display", "dell", "ultrasharp", "4k"],
   },
   {
@@ -181,7 +181,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year warranty",
+    warranty: "12 months warranty",
     keywords: ["monitor", "display", "lenovo", "thinkvision", "usb-c"],
   },
   {
@@ -196,7 +196,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year exchange",
+    warranty: "12 months warranty",
     keywords: ["monitor", "curved", "dell", "ultrasharp", "productivity"],
   },
 
@@ -215,7 +215,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year warranty",
+    warranty: "12 months warranty",
     keywords: ["dock", "docking station", "dell", "usb-c", "hybrid"],
   },
   {
@@ -230,7 +230,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "3-year warranty",
+    warranty: "12 months warranty",
     keywords: ["dock", "docking station", "lenovo", "thinkpad", "usb-c"],
   },
   {
@@ -246,7 +246,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "1-year warranty",
+    warranty: "12 months warranty",
     keywords: ["headset", "audio", "dell", "meetings", "calls"],
   },
   {
@@ -261,7 +261,7 @@ export const products: Product[] = [
     price: null,
     availability: "in-stock",
     quoteOnly: true,
-    warranty: "1-year warranty",
+    warranty: "12 months warranty",
     keywords: ["keyboard", "mouse", "wireless", "lenovo", "combo"],
   },
 
@@ -285,7 +285,7 @@ export const products: Product[] = [
   },
   {
     id: "service-lifecycle",
-    image: "/products/service-repair-hands.png",
+    image: "/products/service-repair-hands-esd.png",
     name: "Device Lifecycle Optimization",
     brand: "Untangled IT",
     category: "Other IT Hardware",
@@ -300,7 +300,7 @@ export const products: Product[] = [
   },
   {
     id: "service-troubleshooting",
-    image: "/products/service-repair-hands.png",
+    image: "/products/service-repair-hands-esd.png",
     name: "Hardware and Software Troubleshooting",
     brand: "Untangled IT",
     category: "Other IT Hardware",
