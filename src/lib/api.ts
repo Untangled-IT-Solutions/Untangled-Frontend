@@ -47,7 +47,8 @@ export interface SubmitQuoteResponse {
 }
 
 export async function submitQuote(payload: SubmitQuotePayload): Promise<SubmitQuoteResponse> {
-  const response = await requestApi('/quotes', payload);
+  // FIXED: Added /api prefix
+  const response = await requestApi('/api/quotes', payload);
   const result = await handleResponse<SubmitQuoteResponse>(response);
   if (!result.success || !result.reference) {
     throw new Error('We could not confirm your quote request. Please contact sales@untangledits.co.za before submitting again.');
@@ -73,7 +74,8 @@ export interface TrackedQuote {
 }
 
 export async function trackQuote(reference: string, email: string): Promise<{ success: boolean; quote: TrackedQuote | null }> {
-  const response = await requestApi('/quotes/track', { reference, email });
+  // FIXED: Added /api prefix
+  const response = await requestApi('/api/quotes/track', { reference, email });
   return handleResponse<{ success: boolean; quote: TrackedQuote | null }>(response);
 }
 
