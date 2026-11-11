@@ -171,8 +171,7 @@ async function handleApi(request, response, url) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
-          from: 'Untangled Website <onboarding@resend.dev>',
-          // FIX: Removed the duplicated domain
+          from: 'Untangled IT Solutions <quotes@untangledits.co.za>',
           to: ['sales@untangledits.co.za'],
           subject: `New Quote: ${quote.reference} - ${quote.customer_name}`,
           html: staffEmailHtml
@@ -198,7 +197,6 @@ async function handleApi(request, response, url) {
             <p style="font-size: 16px;">You can track the status of your quote at any time by clicking the button below and entering this reference number along with your email address.</p>
             
             <div style="margin-top: 30px; text-align: center;">
-              <!-- FIX: Updated link to official domain -->
               <a href="https://www.untangledits.co.za/track" style="background-color: #83B70F; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Track My Quote</a>
             </div>
           </div>
@@ -212,10 +210,8 @@ async function handleApi(request, response, url) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
-          from: 'Untangled IT Solutions <onboarding@resend.dev>',
-          // FIX: Removed the duplicated domain
+          from: 'Untangled IT Solutions <quotes@untangledits.co.za>', 
           to: ['sales@untangledits.co.za'], 
-          // FIX: Removed the "TEST CLIENT - " prefix
           subject: `We received your quote request (${quote.reference})`,
           html: clientEmailHtml
         })
